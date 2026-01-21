@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriPlan Lite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        <header class="flex items-center justify-center space-x-3 py-6">
+            <i class="fas fa-leaf text-green-400 text-4xl"></i>
+            <h1 class="text-4xl font-extrabold tracking-tight">NutriPlan <span class="text-green-400">Lite</span></h1>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <section class="glass-effect rounded-3xl p-8 space-y-6">
+                <h2 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-user-circle mr-3 text-green-400"></i>Your Profile
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Age</label>
+                        <input type="number" id="age" placeholder="25" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="70" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Height (cm)</label>
+                    <input type="number" id="height" placeholder="175" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
+                </div>
+                <button onclick="updatePlan()" class="w-full bg-green-500 hover:bg-green-600 font-black py-4 rounded-2xl transition shadow-xl transform active:scale-95 text-sm uppercase tracking-widest">
+                    Update My Goals
+                </button>
+            </section>
+
+            <section class="glass-effect rounded-3xl p-8 flex flex-col justify-center text-center">
+                <div id="stats-display" class="space-y-4">
+                    <h2 class="text-white/60 uppercase text-[10px] font-black tracking-[0.3em]">Calories Consumed</h2>
+                    <div class="text-8xl font-black tracking-tighter" id="consumed-val">0</div>
+                    <div class="text-sm font-semibold text-blue-200">Daily Target: <span id="target-val" class="text-white font-black">2000</span> kcal</div>
+                    
+                    <div class="w-full bg-white/10 rounded-full h-4 mt-8 shadow-inner p-1">
+                        <div id="progress-bar" class="nutrition-bar bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="glass-effect rounded-3xl p-8">
+            <h2 class="text-xl font-bold mb-8 flex items-center">
+                <i class="fas fa-utensils mr-3 text-blue-400"></i>Log Nutrition
+            </h2>
+            <div class="flex flex-col md:flex-row gap-4 mb-10">
+                <div class="flex-1 space-y-1">
+                    <input type="text" id="food-input" placeholder="Search (e.g. Apple, Chicken breast...)" class="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                </div>
+                <div class="md:w-32 space-y-1">
+                    <input type="number" id="qty-input" placeholder="Grams" class="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                </div>
+                <!-- add food button  -->
+                <button onclick="addEntry()" class="bg-blue-500 hover:bg-blue-600 px-10 py-4 rounded-xl font-black transition shadow-xl text-sm uppercase tracking-widest">
+                    Add Food
+                </button>
+            </div>
+
+            <div id="log-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                <p class="text-center text-white/30 py-10 font-medium italic">Your daily log is empty</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
