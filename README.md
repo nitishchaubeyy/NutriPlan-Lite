@@ -29,12 +29,15 @@ nutriplan-lite/
 │── style.css    
 │── script.js    
 │── README.md     # Project documentation
-
 ---
 ```
-## 🤝 How to Contribute
 
-We welcome contributions from developers, designers, and nutrition enthusiasts! Here’s how you can help:
+## 🛠️ Contribution Guide
+
+We welcome all developers! If you are not familiar with Tailwind CSS, you can still contribute easily:
+1. Assign a unique `id` or `class` to the HTML components you want to style.
+2. Write your custom styles within the `<style>` block in `index.html`.
+3. Ensure your CSS follows the existing glassmorphism aesthetic.
 
 ### 1. Report Bugs
 
@@ -65,6 +68,5 @@ This project is open-source and available for learning and development purposes.
 
 **Subhabrata Paul**
 **Engineering Student**
-
 
 ```
