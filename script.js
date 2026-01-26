@@ -17,8 +17,11 @@ function updatePlan() {
     const w = parseFloat(document.getElementById('weight').value);
     const h = parseFloat(document.getElementById('height').value);
     const a = parseFloat(document.getElementById('age').value);
-
-    if (w && h && a) {
+    if(h<0 || h>300){
+        alert("Height should be between 0 to 300 cm")
+        return;
+    }
+    else if (w && h && a) {
         currentTarget = Math.round((10 * w + 6.25 * h - 5 * a + 5) * 1.2);
         document.getElementById('target-val').innerText = currentTarget;
         refreshUI();
