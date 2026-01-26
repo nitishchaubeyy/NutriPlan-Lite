@@ -40,6 +40,14 @@ async function addEntry() {
     const name = inputEl.value.toLowerCase().trim();
     const qty = parseFloat(qtyEl.value) || 100;
 
+/**
+ * Add a food intake entry from the form to the consumption log and update progress toward the calorie target.
+ *
+ * Reads the food name and quantity from the page, computes calories (using the food database or a default value),
+ * increments the accumulated consumed calories, prepends a formatted log entry to the log list, refreshes the UI,
+ * clears the input fields, and reveals the target-completed message when the target is reached or exceeded.
+ */
+
     console.log(foodDB["apple"])
     if (!name) return;
     const baseCal = foodDB[name] ? foodDB[name].cal : 150;
@@ -74,10 +82,19 @@ async function addEntry() {
     }
 }
 
-// Update the Progress UI
+/**
+ * Updates calorie progress display to reflect the current consumed amount and target.
+ *
+ * Sets the text of the element with id "consumed-val" to the current consumed calories
+ * and adjusts the width of the element with id "progress-bar" to the progress percentage,
+ * capped at 100%.
+ */
 function refreshUI() {
+
     document.getElementById("consumed-val").innerText = currentConsumed;
     const percentage = Math.min(100, (currentConsumed / currentTarget) * 100);
     document.getElementById("progress-bar").style.width = percentage + "%";
 }
+
+
 
