@@ -1,0 +1,134 @@
+{
+    "apple": {
+        "cal": 52
+    },
+    "banana": {
+        "cal": 89
+    },
+    "orange": {
+        "cal": 47
+    },
+    "mango": {
+        "cal": 60
+    },
+    "grapes": {
+        "cal": 69
+    },
+    "papaya": {
+        "cal": 43
+    },
+    "pineapple": {
+        "cal": 50
+    },
+    "rice": {
+        "cal": 130
+    },
+    "wheat roti": {
+        "cal": 297
+    },
+    "bread": {
+        "cal": 265
+    },
+    "brown bread": {
+        "cal": 247
+    },
+    "pasta": {
+        "cal": 131
+    },
+    "oats": {
+        "cal": 389
+    },
+    "corn": {
+        "cal": 96
+    },
+    "potato": {
+        "cal": 77
+    },
+    "sweet potato": {
+        "cal": 86
+    },
+    "tomato": {
+        "cal": 18
+    },
+    "onion": {
+        "cal": 40
+    },
+    "carrot": {
+        "cal": 41
+    },
+    "spinach": {
+        "cal": 23
+    },
+    "broccoli": {
+        "cal": 34
+    },
+    "cabbage": {
+        "cal": 25
+    },
+    "milk": {
+        "cal": 42
+    },
+    "curd": {
+        "cal": 59
+    },
+    "cheese": {
+        "cal": 402
+    },
+    "butter": {
+        "cal": 717
+    },
+    "paneer": {
+        "cal": 265
+    },
+    "tofu": {
+        "cal": 76
+    },
+    "egg": {
+        "cal": 155
+    },
+    "chicken breast": {
+        "cal": 165
+    },
+    "fish": {
+        "cal": 206
+    },
+    "mutton": {
+        "cal": 294
+    },
+    "dal": {
+        "cal": 116
+    },
+    "chickpeas": {
+        "cal": 164
+    },
+    "rajma": {
+        "cal": 127
+    },
+    "soybeans": {
+        "cal": 446
+    },
+    "almonds": {
+        "cal": 579
+    },
+    "cashews": {
+        "cal": 553
+    },
+    "peanuts": {
+        "cal": 567
+    },
+    "walnuts": {
+        "cal": 654
+    },
+    "sugar": {
+        "cal": 387
+    },
+    "honey": {
+        "cal": 304
+    },
+    "oil": {
+        "cal": 884
+    },
+    "ghee": {
+        "cal": 900
+    }
+}
