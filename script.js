@@ -1,35 +1,70 @@
 
-let foodDB = ""
-
-async function getFoodDetails() {
-    res = await fetch("./foodDB.json")
-    foodDB = await res.json();
-    console.log(foodDB)
-    console.log(foodDB["apple"])
-}
+let foodDB = "";
 
 let currentTarget = 2000;
 let currentConsumed = 0;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const profile = JSON.parse(localStorage.getItem("profile"));
+  if (profile) {
+    document.getElementById("age").value = profile.age;
+    document.getElementById("weight").value = profile.weight;
+    document.getElementById("height").value = profile.height;
+  }
+
+  currentTarget =
+    Number(localStorage.getItem("currentTarget")) || currentTarget;
+
+  currentConsumed =
+    Number(localStorage.getItem("currentConsumed")) || 0;
+
+  document.getElementById("target-val").innerText = currentTarget;
+
+  const savedLogs = JSON.parse(localStorage.getItem("logs")) || [];
+  const list = document.getElementById("log-list");
+  list.innerHTML = "";
+
+  savedLogs.forEach((log) => restoreLog(log));
+
+  refreshUI();
+});
+
+
+async function getFoodDetails() {
+  res = await fetch("./foodDB.json");
+  foodDB = await res.json();
+  console.log(foodDB);
+  console.log(foodDB["apple"]);
+}
+
+
 function updatePlan() {
-    const w = parseFloat(document.getElementById('weight').value);
-    const h = parseFloat(document.getElementById('height').value);
-    const a = parseFloat(document.getElementById('age').value);
-    if (h < 0 || h > 300) {
-        alert("Height should be between 0 to 300 cm")
-        return;
-    }
-    else if (w < 0 || w > 250) {
-        alert("Weight should not more than 250 kg and less than 0 kg");
-        return;
-    }
-    else if (w && h && a) {
-        currentTarget = Math.round((10 * w + 6.25 * h - 5 * a + 5) * 1.2);
-        document.getElementById('target-val').innerText = currentTarget;
-        refreshUI();
-    }
-    else {
-        alert("Please fill in all profile fields to calculate your goals.");
-    }
+  const w = parseFloat(document.getElementById("weight").value);
+  const h = parseFloat(document.getElementById("height").value);
+  const a = parseFloat(document.getElementById("age").value);
+  if (h < 0 || h > 300) {
+    alert("Height should be between 0 to 300 cm");
+    return;
+  } else if (w < 0 || w > 250) {
+    alert("Weight should not more than 250 kg and less than 0 kg");
+    return;
+  } else if (w && h && a) {
+    currentTarget = Math.round((10 * w + 6.25 * h - 5 * a + 5) * 1.2);
+    document.getElementById("target-val").innerText = currentTarget;
+    refreshUI();
+    localStorage.setItem(
+      "profile",
+      JSON.stringify({
+        age: a,
+        weight: w,
+        height: h,
+      }),
+    );
+
+    localStorage.setItem("currentTarget", currentTarget);
+  } else {
+    alert("Please fill in all profile fields to calculate your goals.");
+  }
 }
 
 // Add
@@ -99,22 +134,39 @@ function addEntry() {
   list.prepend(div);
 
   refreshUI();
+  saveLogs();
+
 
   inputEl.value = "";
   qtyEl.value = "";
 
-  document.getElementById("target-message").classList.toggle(
-    "hidden",
-    currentConsumed < currentTarget
-  );
+  document
+    .getElementById("target-message")
+    .classList.toggle("hidden", currentConsumed < currentTarget);
 }
 
 function refreshUI() {
-
-    document.getElementById("consumed-val").innerText = currentConsumed;
-    const percentage = Math.min(100, (currentConsumed / currentTarget) * 100);
-    document.getElementById("progress-bar").style.width = percentage + "%";
+  document.getElementById("consumed-val").innerText = currentConsumed;
+  const percentage = Math.min(100, (currentConsumed / currentTarget) * 100);
+  document.getElementById("progress-bar").style.width = percentage + "%";
 }
+
+function saveLogs() {
+  const cards = document.querySelectorAll("#log-list .group");
+  const logs = [];
+
+  cards.forEach(card => {
+    logs.push({
+      name: card.dataset.name,
+      qty: Number(card.dataset.qty),
+      cal: Number(card.dataset.cal)
+    });
+  });
+
+  localStorage.setItem("logs", JSON.stringify(logs));
+  localStorage.setItem("currentConsumed", currentConsumed);
+}
+
 
 function startEdit(btn) {
   const card = btn.closest(".group");
@@ -163,10 +215,12 @@ function saveEdit(btn) {
   btn.classList.add("hidden");
   btn.previousElementSibling.classList.remove("hidden");
 
-  document.getElementById("target-message").classList.toggle(
-    "hidden",
-    currentConsumed < currentTarget
-  );
+  document
+    .getElementById("target-message")
+    .classList.toggle("hidden", currentConsumed < currentTarget);
+  
+  saveLogs();
+
 }
 
 function deleteEntry(btn) {
@@ -186,6 +240,54 @@ function deleteEntry(btn) {
   }
 
   document.getElementById("target-message").classList.add("hidden");
+
+  saveLogs();
+
 }
 
 
+function restoreLog(log) {
+  const list = document.getElementById("log-list");
+
+  const div = document.createElement("div");
+
+  div.dataset.name = log.name;
+  div.dataset.qty = log.qty;
+  div.dataset.cal = log.cal;
+
+  div.className =
+    "flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all group";
+
+  div.innerHTML = `
+    <div class="flex flex-col">
+      <span class="capitalize font-bold text-base tracking-tight">${log.name}</span>
+      <span class="text-[10px] text-white/40 uppercase font-black tracking-widest mt-1 qty-text">
+        ${log.qty}g Served
+      </span>
+    </div>
+
+    <div class="text-right flex items-center gap-4">
+      <div>
+        <span class="text-green-400 font-black text-lg cal-text">+${log.cal}</span>
+        <span class="text-[10px] text-green-400/50 uppercase font-black ml-1">kcal</span>
+      </div>
+
+      <button onclick="startEdit(this)"
+        class="opacity-0 group-hover:opacity-100 text-yellow-400 hover:text-yellow-300 transition">
+        <i class="fas fa-pen"></i>
+      </button>
+
+      <button onclick="saveEdit(this)"
+        class="hidden text-green-400 hover:text-green-300 transition">
+        <i class="fas fa-check"></i>
+      </button>
+
+      <button onclick="deleteEntry(this)"
+        class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  `;
+
+  list.prepend(div);
+}
