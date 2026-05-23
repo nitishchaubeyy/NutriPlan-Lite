@@ -1,160 +1,570 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriPlan Lite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>NutriPlan AI - Fitness &amp; Nutrition Tracker</title>
+  <meta name="description" content="AI-powered nutrition tracker for calories, macros, hydration, and wellness.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link rel="stylesheet" href="styles/tracker.css">
+  <link rel="stylesheet" href="styles/hydration.css">
+  <link rel="stylesheet" href="styles/ai-panel.css">
+  <link rel="stylesheet" href="styles/animations.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/landing.css">
+  <link rel="stylesheet" href="styles/ai.css">
+  
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  
+  <!-- Scripts (load order matters) -->
+  <script src="scripts/storage.js" defer></script>
+  <script src="scripts/analytics.js" defer></script>
+  <script src="scripts/tracker.js" defer></script>
+  <script src="scripts/hydration.js" defer></script>
+  <script src="scripts/dashboard.js" defer></script>
+  <script src="scripts/ai.js" defer></script>
+  <script src="scripts/navigation.js" defer></script>
+  <script src="scripts/app.js" defer></script>
+  <script src="scripts/landing-animations.js" defer></script>
 </head>
-<body class="p-4 md:p-8">
+<body>
+  <!-- Toast container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-    <div class="max-w-5xl mx-auto space-y-8">
-        <header class="flex items-center justify-center space-x-3 py-6">
-            <i class="fas fa-leaf text-green-400 text-4xl"></i>
-            <h1 class="text-4xl font-extrabold tracking-tight">NutriPlan <span class="text-green-400">Lite</span></h1>
-        </header>
+  <div class="app-shell">
+    <!-- ── Landing Header ──────────────────────────────────────── -->
+    <header id="landing-header" class="landing-header">
+      <div class="landing-header-container">
+        <a class="landing-brand" href="#landing" aria-label="NutriPlan AI Home">
+          <span class="brand-mark small-mark">N</span>
+          <strong>NutriPlan AI</strong>
+        </a>
 
-        <div class="grid md:grid-cols-3 gap-8">
-            <section class="glass-effect rounded-3xl p-8 space-y-6">
-                <h2 class="text-xl font-bold flex items-center">
-                    <i class="fas fa-user-circle mr-3 text-green-400"></i>Your Profile
-                </h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Age</label>
-                        <input type="number" id="age" placeholder="25" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Weight (kg)</label>
-                        <input type="number" id="weight" placeholder="70" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Height (cm)</label>
-                    <input type="number" id="height" placeholder="175" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Gender</label>
-                        <select id="gender" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all text-white cursor-pointer">
-                            <option value="male" selected>Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-black tracking-widest text-white/50 ml-1">Activity Level</label>
-                        <select id="activity" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all text-white cursor-pointer">
-                            <option value="1.2" selected>Sedentary</option>
-                            <option value="1.375">Lightly Active</option>
-                            <option value="1.55">Moderately Active</option>
-                            <option value="1.725">Very Active</option>
-                            <option value="1.9">Extra Active</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="updatePlan()" class="w-full bg-green-500 hover:bg-green-600 font-black py-4 rounded-2xl transition shadow-xl transform active:scale-95 text-sm uppercase tracking-widest">
-                    Update My Goals
-                </button>
-            </section>
+        <nav class="landing-nav-center" aria-label="Landing Navigation">
+          <a href="#landing" data-nav="landing">Home</a>
+          <a href="#features">Features</a>
+          <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+          <a href="#ai-helper" data-nav="ai-helper">AI Coach</a>
+        </nav>
 
-            <section class="glass-effect rounded-3xl p-8 flex flex-col justify-center text-center">
-                <div id="stats-display" class="space-y-4">
-                    <h2 class="text-white/60 uppercase text-[10px] font-black tracking-[0.3em]">Calories Consumed</h2>
-                    <div class="text-8xl font-black tracking-tighter" id="consumed-val">0</div>
-                    <div class="text-sm font-semibold text-blue-200">Daily Target: <span id="target-val" class="text-white font-black">2000</span> kcal</div>
-                    
-                    <div class="w-full bg-white/10 rounded-full h-4 mt-8 shadow-inner p-1">
-                        <div id="progress-bar" class="nutrition-bar bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full" style="width: 0%"></div>
-                    </div>
-                    
-                    <!-- Macronutrient Bars -->
-                    <div class="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-white/10 text-center">
-                        <div class="space-y-1">
-                            <span class="text-[10px] uppercase font-bold text-white/50 block">Protein</span>
-                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div id="protein-bar" class="nutrition-bar bg-amber-400 h-full" style="width: 0%"></div>
-                            </div>
-                            <span class="text-xs font-semibold block text-amber-300"><span id="protein-consumed" class="font-bold">0</span> / <span id="protein-target">125</span>g</span>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-[10px] uppercase font-bold text-white/50 block">Carbs</span>
-                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div id="carbs-bar" class="nutrition-bar bg-indigo-400 h-full" style="width: 0%"></div>
-                            </div>
-                            <span class="text-xs font-semibold block text-indigo-300"><span id="carbs-consumed" class="font-bold">0</span> / <span id="carbs-target">225</span>g</span>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-[10px] uppercase font-bold text-white/50 block">Fats</span>
-                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div id="fats-bar" class="nutrition-bar bg-rose-400 h-full" style="width: 0%"></div>
-                            </div>
-                            <span class="text-xs font-semibold block text-rose-300"><span id="fats-consumed" class="font-bold">0</span> / <span id="fats-target">67</span>g</span>
-                        </div>
-                    </div>
+        <div class="landing-header-actions">
+          <button id="theme-toggle-landing" class="icon-button theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">☀️</button>
+          <a href="#dashboard" class="primary-button cta-launch" data-nav="dashboard">Get Started</a>
+          <button class="icon-button mobile-menu-btn" type="button" aria-label="Mobile menu">☰</button>
+        </div>
+      </div>
+    </header>
 
-                    <!-- Progress/Target Achieved message -->
-                    <div id="target-message" class="hidden mt-6 px-6 py-4 rounded-2xl bg-green-500/20 border border-green-400/40 text-green-200 font-bold text-xs">
-                        🎉 Congratulations! You have achieved your daily calorie target.
-                    </div>
-                </div>
-            </section>
+    <!-- ── Dashboard Header ──────────────────────────────────────── -->
+    <header id="app-header" class="app-header">
+      <a class="brand" href="#" aria-label="NutriPlan AI dashboard">
+        <span class="brand-mark">N</span>
+        <span>
+          <strong>NutriPlan AI</strong>
+          <small>Fitness &amp; nutrition companion</small>
+        </span>
+      </a>
 
-            <section class="glass-effect rounded-3xl p-8 flex flex-col justify-between items-center text-center">
-                <div class="w-full">
-                    <h2 class="text-xl font-bold flex items-center justify-center">
-                        <i class="fas fa-glass-water mr-3 text-cyan-400"></i>Water Tracker
-                    </h2>
-                    <p class="text-white/60 uppercase text-[10px] font-black tracking-[0.3em] mt-6">Daily Intake</p>
-                    <div class="text-sm font-semibold text-cyan-200 mt-1"><span id="water-consumed" class="text-white font-black text-2xl">0</span> / <span id="water-target" class="text-white/70">2500</span> ml</div>
-                </div>
+      <div class="date-card" aria-label="Selected day">
+        <button class="icon-button" type="button" data-day-prev aria-label="Previous day">‹</button>
+        <div>
+          <span>Today</span>
+          <strong id="current-date-label">Loading…</strong>
+        </div>
+        <button class="icon-button" type="button" data-day-next aria-label="Next day">›</button>
+      </div>
 
-                <div class="water-glass my-6">
-                    <div id="water-fill" class="water-fill" style="height: 0%"></div>
-                </div>
+      <nav class="desktop-nav" aria-label="Primary">
+        <a href="#landing" data-nav="landing">Home</a>
+        <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#ai-helper" data-nav="ai-helper">AI Coach</a>
+      </nav>
 
-                <div class="w-full space-y-3">
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="addWater(250)" class="bg-cyan-500/20 hover:bg-cyan-500/30 active:scale-95 text-cyan-200 font-black py-3 rounded-xl transition flex items-center justify-center text-xs gap-2">
-                            <i class="fas fa-glass-water"></i> +250ml
-                        </button>
-                        <button onclick="addWater(500)" class="bg-cyan-500/20 hover:bg-cyan-500/30 active:scale-95 text-cyan-200 font-black py-3 rounded-xl transition flex items-center justify-center text-xs gap-2">
-                            <i class="fas fa-bottle-water"></i> +500ml
-                        </button>
-                    </div>
-                    <button onclick="resetWater()" class="text-[10px] text-white/30 hover:text-white/60 transition uppercase tracking-widest font-black">
-                        Reset Intake
-                    </button>
-                </div>
-            </section>
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme" title="Toggle theme">☀️</button>
+      </div>
+    </header>
+
+    <!-- ── Main App Content (SPA container) ────────────────────────── -->
+    <main id="app-content" class="app-content-container">
+      <div class="page-loader">Loading...</div>
+    </main>
+
+    <!-- ── Mobile bottom nav ──────────────────────────────────── -->
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+      <a href="#landing" data-nav="landing">🏠<span>Home</span></a>
+      <a href="#dashboard" data-nav="dashboard">📊<span>Dashboard</span></a>
+      <button type="button" data-open-food-drawer class="bottom-nav-add">＋</button>
+      <a href="#ai-helper" data-nav="ai-helper">🤖<span>AI</span></a>
+    </nav>
+  </div>
+
+  <!-- ── Food Drawer ──────────────────────────────────────────── -->
+  <div id="food-drawer" class="drawer hidden" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <button class="drawer-backdrop" type="button" data-close-food-drawer aria-label="Close food drawer"></button>
+    <aside class="drawer-card">
+      <div class="drawer-handle" aria-hidden="true"></div>
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Food Log</p>
+          <h2 id="drawer-title">Add food</h2>
+        </div>
+        <button class="icon-button" type="button" data-close-food-drawer aria-label="Close">×</button>
+      </div>
+
+      <form id="food-form" class="food-form" autocomplete="off">
+        <input type="hidden" id="food-id">
+
+        <!-- Food name with autocomplete -->
+        <div class="autocomplete-field">
+          <label>
+            <span>Food name</span>
+            <input id="food-name" type="text" placeholder="e.g. Chicken breast, Rice, Oats…" autocomplete="off" required>
+          </label>
+          <div id="food-suggestions" class="autocomplete-list hidden"></div>
         </div>
 
-        <section class="glass-effect rounded-3xl p-8">
-            <h2 class="text-xl font-bold mb-8 flex items-center">
-                <i class="fas fa-utensils mr-3 text-blue-400"></i>Log Nutrition
-            </h2>
-            <div class="flex flex-col md:flex-row gap-4 mb-10">
-                <div class="flex-1 space-y-1 relative">
-                    <input type="text" id="food-input" oninput="showSuggestions()" onfocus="showSuggestions()" autocomplete="off" placeholder="Search (e.g. Apple, Chicken breast...)" class="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                    <div id="autocomplete-list" class="hidden absolute top-full left-0 right-0 bg-slate-900/95 border border-white/20 rounded-xl mt-2 overflow-hidden z-50 backdrop-blur-md shadow-2xl"></div>
-                </div>
-                <div class="md:w-32 space-y-1">
-                    <input type="number" id="qty-input" placeholder="Grams" class="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                </div>
-                <!-- add food button  -->
-                <button onclick="addEntry()" class="bg-blue-500 hover:bg-blue-600 px-10 py-4 rounded-xl font-black transition shadow-xl text-sm uppercase tracking-widest">
-                    Add Food
-                </button>
-            </div>
+        <div class="form-grid">
+          <label>
+            <span>Meal</span>
+            <select id="food-category">
+              <option value="breakfast">🌅 Breakfast</option>
+              <option value="lunch">☀️ Lunch</option>
+              <option value="dinner">🌙 Dinner</option>
+              <option value="snacks">🍎 Snacks</option>
+            </select>
+          </label>
+          <label>
+            <span>Quantity (g)</span>
+            <input id="food-quantity" type="number" min="1" max="5000" value="100" required>
+          </label>
+        </div>
 
-            <div id="log-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                <p class="text-center text-white/30 py-10 font-medium italic">Your daily log is empty</p>
+        <div class="nutrient-grid">
+          <label>
+            <span>Calories</span>
+            <input id="food-calories" type="number" min="0" max="10000" step="1" placeholder="0" required>
+          </label>
+          <label>
+            <span>Protein (g)</span>
+            <input id="food-protein" type="number" min="0" max="1000" step="0.1" placeholder="0">
+          </label>
+          <label>
+            <span>Carbs (g)</span>
+            <input id="food-carbs" type="number" min="0" max="1000" step="0.1" placeholder="0">
+          </label>
+          <label>
+            <span>Fat (g)</span>
+            <input id="food-fats" type="number" min="0" max="1000" step="0.1" placeholder="0">
+          </label>
+        </div>
+
+        <button class="primary-button full-width" type="submit">Save food entry</button>
+      </form>
+    </aside>
+  </div>
+
+
+
+  <!-- ── Onboarding Modal ─────────────────────────────────────── -->
+  <div id="onboarding-modal" class="drawer hidden" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <div class="drawer-backdrop" aria-hidden="true"></div>
+    <aside class="drawer-card">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Welcome to NutriPlan AI</p>
+          <h2 id="onboarding-title">Set up your profile</h2>
+        </div>
+      </div>
+
+      <div class="profile-form">
+        <div class="form-row-2">
+          <label>
+            <span>Age</span>
+            <input id="age" type="number" min="1" max="120" value="25" placeholder="25">
+          </label>
+          <label>
+            <span>Weight (kg)</span>
+            <input id="weight" type="number" min="20" max="300" step="0.1" value="70" placeholder="70">
+          </label>
+        </div>
+        <div class="form-row-2">
+          <label>
+            <span>Height (cm)</span>
+            <input id="height" type="number" min="50" max="280" value="175" placeholder="175">
+          </label>
+          <label>
+            <span>Gender</span>
+            <select id="gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          <span>Activity level</span>
+          <select id="activity">
+            <option value="1.2">Sedentary (desk job)</option>
+            <option value="1.375">Light (1-3 days/week)</option>
+            <option value="1.55" selected>Moderate (3-5 days)</option>
+            <option value="1.725">Active (6-7 days)</option>
+            <option value="1.9">Very active (athlete)</option>
+          </select>
+        </label>
+        <div class="form-row-2">
+          <label>
+            <span>Goal</span>
+            <select id="goal">
+              <option value="lose">Lose weight</option>
+              <option value="maintain" selected>Maintain</option>
+              <option value="gain">Gain muscle</option>
+            </select>
+          </label>
+          <label>
+            <span>Macro split</span>
+            <select id="macroSplit">
+              <option value="balanced" selected>Balanced</option>
+              <option value="highprotein">High protein</option>
+              <option value="lowcarb">Low carb</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+        </div>
+        <div id="custom-macros-panel" class="hidden custom-macros">
+          <div class="form-row-3">
+            <label><span>Protein %</span><input id="customProtein" type="number" min="0" max="100" value="25"></label>
+            <label><span>Carbs %</span><input id="customCarbs" type="number" min="0" max="100" value="45"></label>
+            <label><span>Fat %</span><input id="customFat" type="number" min="0" max="100" value="30"></label>
+          </div>
+        </div>
+        <label>
+          <span>Water target (ml)</span>
+          <input id="waterTarget" type="number" min="500" max="10000" step="100" value="2500">
+        </label>
+        <button id="save-profile-btn" class="primary-button full-width" type="button">Complete Setup</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ── SPA Templates (Bypass CORS on file://) ──────────────────── -->
+  <template id="template-landing">
+    <div class="landing-page">
+      <!-- Hero Section -->
+      <section class="landing-hero">
+        <div class="container hero-content">
+          <div class="hero-text-block">
+            <h1 class="landing-title">NutriPlan AI.<br><span class="text-gradient">Track smarter, eat better.</span></h1>
+            <p class="landing-subtitle">The ultimate AI-powered dashboard for calories, macros, hydration, and intelligent meal recommendations.</p>
+            <div class="hero-cta">
+              <a href="#dashboard" class="primary-button cta-button">Go to Dashboard</a>
+              <a href="#ai-helper" class="secondary-button cta-button">Chat with AI</a>
             </div>
-        </section>
+          </div>
+          <div class="hero-visual">
+            <div class="glass-panel mock-card">
+              <div class="mock-header">
+                <span>Daily Readiness</span>
+                <strong>92/100</strong>
+              </div>
+              <div class="mock-progress progress-fill fill-green" style="width: 92%"></div>
+            </div>
+            <div class="glass-panel mock-card ai-mock">
+              <strong>AI Coach</strong>
+              <p>You hit your protein goal! Remember to drink 500ml of water before bed.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+      <!-- Features Section -->
+      <section class="landing-features container">
+        <div class="section-header text-center">
+          <h2>Everything you need for your health</h2>
+          <p>A beautifully unified experience without the clutter.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card glass-panel">
+            <div class="feature-icon">📊</div>
+            <h3>Nutrition Analytics</h3>
+            <p>Track macros, calories, and weekly trends with beautiful dynamic charts.</p>
+          </div>
+          <div class="feature-card glass-panel">
+            <div class="feature-icon">🤖</div>
+            <h3>AI Nutrition Coach</h3>
+            <p>Get personalized feedback, meal ideas, and goal tracking from a smart assistant.</p>
+          </div>
+          <div class="feature-card glass-panel">
+            <div class="feature-icon">💧</div>
+            <h3>Hydration Tracker</h3>
+            <p>Stay hydrated with an animated water bottle and visual progress indicators.</p>
+          </div>
+        </div>
+      </section>
+    
+      <!-- CTA Section -->
+      <section class="landing-cta container">
+        <div class="glass-panel cta-panel text-center">
+          <h2>Ready to transform your habits?</h2>
+          <p>All your data is stored locally. No sign-up required.</p>
+          <a href="#dashboard" class="primary-button cta-button large">Start Tracking Now</a>
+        </div>
+      </section>
+    
+      <!-- Footer -->
+      <footer class="landing-footer container">
+        <div class="footer-content text-center">
+          <span class="brand-mark">N</span>
+          <strong>NutriPlan AI</strong>
+          <p class="muted">© 2026 NutriPlan. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
+  </template>
 
-    <script src="script.js"></script>
+  <template id="template-dashboard">
+    <div class="dashboard-layout">
+      <!-- Hero Panel -->
+      <section class="hero-panel glass-panel">
+        <div class="hero-text">
+          <p class="eyebrow">Daily Readiness</p>
+          <h1>Track smarter.<br>Eat with intent.</h1>
+          <p class="hero-copy">A unified dashboard for calories, macros, hydration, and AI-powered meal recommendations.</p>
+          <div class="hero-badges">
+            <span class="streak-badge">🔥 <span id="streak-count">0</span>-day streak</span>
+          </div>
+        </div>
+        <div class="health-score" aria-label="Nutrition score">
+          <div class="score-ring" id="nutrition-score-ring" style="--progress: 0%">
+            <span id="nutrition-score">0</span>
+          </div>
+          <small>Nutrition score</small>
+        </div>
+      </section>
+    
+      <!-- Summary Metric Cards -->
+      <section class="summary-grid" aria-label="Daily summary">
+        <!-- Calories Card -->
+        <article class="metric-card glass-panel" id="calories-card">
+          <div class="metric-header">
+            <span>Calories</span>
+            <strong id="calorie-balance-label">Not Started</strong>
+          </div>
+          <div class="metric-main">
+            <span id="calories-consumed">0</span>
+            <small>/<span id="calories-goal">0</span> kcal</small>
+          </div>
+          <div class="progress-track">
+            <div id="calories-progress" class="progress-fill fill-green" style="width:0%"></div>
+          </div>
+          <p id="calorie-insight" class="metric-insight">Start logging to track today.</p>
+        </article>
+    
+        <!-- Macros Card -->
+        <article class="metric-card glass-panel" id="macros-card">
+          <div class="metric-header">
+            <span>Macros</span>
+            <strong id="macro-balance-label">Tracking</strong>
+          </div>
+          <div class="macro-mini-grid">
+            <div>
+              <span>Protein</span>
+              <strong><span id="protein-consumed">0</span>/<span id="protein-goal">0</span>g</strong>
+            </div>
+            <div>
+              <span>Carbs</span>
+              <strong><span id="carbs-consumed">0</span>/<span id="carbs-goal">0</span>g</strong>
+            </div>
+            <div>
+              <span>Fats</span>
+              <strong><span id="fats-consumed">0</span>/<span id="fats-goal">0</span>g</strong>
+            </div>
+          </div>
+          <div class="macro-bars">
+            <div class="progress-track"><div id="protein-progress" class="progress-fill fill-amber" style="width:0%"></div></div>
+            <div class="progress-track"><div id="carbs-progress" class="progress-fill fill-cyan" style="width:0%"></div></div>
+            <div class="progress-track"><div id="fats-progress" class="progress-fill fill-rose" style="width:0%"></div></div>
+          </div>
+          <!-- Macro donut -->
+          <div class="macro-donut-row">
+            <div id="macro-donut" class="macro-donut" aria-hidden="true"></div>
+            <div class="macro-donut-legend">
+              <span><i style="background:var(--amber)"></i>P</span>
+              <span><i style="background:var(--teal)"></i>C</span>
+              <span><i style="background:var(--rose)"></i>F</span>
+            </div>
+          </div>
+        </article>
+    
+        <!-- Hydration Card -->
+        <article class="metric-card hydration-summary glass-panel" id="hydration-card">
+          <div class="metric-header">
+            <span>Hydration</span>
+            <strong id="hydration-label">None Yet</strong>
+          </div>
+          <div class="mini-ring" id="water-ring" style="--progress: 0%">
+            <span id="water-percent">0%</span>
+          </div>
+          <p><span id="water-consumed">0</span> / <span id="water-goal">0</span> ml</p>
+        </article>
+    
+        <!-- Goals Card -->
+        <article class="metric-card glass-panel" id="goals-card">
+          <div class="metric-header">
+            <span>Goal</span>
+            <strong>Targets</strong>
+          </div>
+          <div class="goal-row">
+            <span>Maintenance</span>
+            <strong id="maintenance-calories">0 kcal</strong>
+          </div>
+          <div class="goal-row">
+            <span>Calorie target</span>
+            <strong id="target-display">—</strong>
+          </div>
+          <div class="goal-row">
+            <span>Water target</span>
+            <strong id="water-target-display">—</strong>
+          </div>
+        </article>
+      </section>
+    
+      <!-- ── Main tracker column ─────────────────────────────── -->
+      <section id="meals" class="tracker-column">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Nutrition Tracking</p>
+            <h2>Meal timeline</h2>
+          </div>
+          <button class="primary-button" type="button" data-open-food-drawer>+ Add Food</button>
+        </div>
+    
+        <!-- Search & filter -->
+        <div class="glass-panel search-panel">
+          <label class="search-field">
+            <span class="sr-only">Search food logs</span>
+            <input id="food-search" type="search" placeholder="Search meals, ingredients…">
+          </label>
+          <div class="quick-filters" aria-label="Meal filters">
+            <button type="button" class="active" data-filter="all">All</button>
+            <button type="button" data-filter="breakfast">Breakfast</button>
+            <button type="button" data-filter="lunch">Lunch</button>
+            <button type="button" data-filter="dinner">Dinner</button>
+            <button type="button" data-filter="snacks">Snacks</button>
+          </div>
+        </div>
+    
+        <!-- Meal timeline list -->
+        <div id="meal-timeline" class="meal-timeline" aria-live="polite"></div>
+    
+        <!-- Weekly Charts -->
+        <section class="glass-panel charts-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Weekly Analytics</p>
+              <h2>7-day trends</h2>
+            </div>
+          </div>
+          <div class="charts-row">
+            <div class="chart-block">
+              <p class="chart-label">Calories (7 days)</p>
+              <div id="weekly-calories-chart" class="bar-chart" aria-label="Weekly calorie bar chart"></div>
+            </div>
+            <div class="chart-block">
+              <p class="chart-label">Hydration (7 days)</p>
+              <div id="weekly-water-chart" class="bar-chart" aria-label="Weekly hydration bar chart"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    
+      <!-- ── Sidebar ─────────────────────────────────────────── -->
+      <aside class="side-column">
+    
+        <!-- Recommendations -->
+        <section class="recommendations glass-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Recommendations</p>
+              <h2>Next best actions</h2>
+            </div>
+          </div>
+          <div id="recommendation-list" class="recommendation-list"></div>
+        </section>
+    
+        <!-- Hydration Panel -->
+        <section class="hydration-panel glass-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Hydration</p>
+              <h2>Water tracker</h2>
+            </div>
+            <button class="secondary-button" type="button" data-add-water="250">+ Water</button>
+          </div>
+          <div class="water-visual">
+            <div class="water-bottle" aria-hidden="true">
+              <div id="water-fill"></div>
+            </div>
+            <div class="water-text">
+              <strong><span id="water-consumed-large">0</span> ml</strong>
+              <span>of <span id="water-target-large">0</span> ml target</span>
+            </div>
+          </div>
+          <div class="water-actions">
+            <button type="button" data-add-water="100">+100ml</button>
+            <button type="button" data-add-water="250">+250ml</button>
+            <button type="button" data-add-water="500">+500ml</button>
+            <button type="button" data-reset-water>Reset</button>
+          </div>
+        </section>
+    
+      </aside>
+    </div>
+  </template>
+
+  <template id="template-ai-helper">
+    <div class="ai-helper-layout">
+      <div class="ai-chat-container glass-panel">
+        <div class="ai-chat-header">
+          <div class="ai-bot-info">
+            <span class="bot-avatar">🤖</span>
+            <div>
+              <h2>NutriPlan AI Coach</h2>
+              <small class="status-online">● Online and ready to help</small>
+            </div>
+          </div>
+          <button class="icon-button" id="clear-ai-chat" title="Clear Chat">🗑️</button>
+        </div>
+        
+        <div class="ai-chat-messages" id="main-ai-feed" aria-live="polite">
+          <!-- Chat bubbles will go here -->
+          <div class="chat-bubble ai-bubble">
+            <p>Hello! I'm your dedicated AI nutrition assistant. I analyze your meals, hydration, and goals to give you personalized recommendations.</p>
+            <p>Try asking me about your daily progress or for a meal suggestion!</p>
+          </div>
+        </div>
+    
+        <div class="ai-suggestions" id="ai-quick-prompts">
+          <button class="prompt-btn">Analyze my daily intake</button>
+          <button class="prompt-btn">Suggest a high-protein dinner</button>
+          <button class="prompt-btn">How's my hydration?</button>
+          <button class="prompt-btn">Give me a health tip</button>
+        </div>
+    
+        <form class="ai-chat-input-area" id="main-ai-form">
+          <input type="text" id="main-ai-input" placeholder="Message NutriPlan AI..." autocomplete="off">
+          <button type="submit" class="primary-button send-btn" aria-label="Send message">↑</button>
+        </form>
+      </div>
+    </div>
+  </template>
+
 </body>
 </html>

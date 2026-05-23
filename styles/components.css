@@ -1,0 +1,559 @@
+/* ================================================================
+   components.css — New UI components for NutriPlan-Lite
+   ================================================================ */
+
+/* ── Toast Notifications ──────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 9999;
+  display: grid;
+  gap: 0.6rem;
+  pointer-events: none;
+}
+
+.app-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 0.85rem 1rem;
+  background: rgba(13, 22, 37, 0.96);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px);
+  animation: toast-in 300ms var(--ease) both;
+  pointer-events: all;
+}
+
+.toast-leaving {
+  animation: toast-out 260ms var(--ease) forwards;
+}
+
+@keyframes toast-in {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+
+@keyframes toast-out {
+  from { transform: translateX(0);   opacity: 1; }
+  to   { transform: translateX(120%); opacity: 0; }
+}
+
+.toast-icon {
+  flex: 0 0 auto;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  font-weight: 900;
+  font-size: 0.8rem;
+}
+
+.toast-success .toast-icon { background: rgba(56, 242, 166, 0.14); color: var(--green); }
+.toast-error   .toast-icon { background: rgba(251, 113, 133, 0.14); color: var(--rose); }
+.toast-warning .toast-icon { background: rgba(251, 191, 36, 0.14); color: var(--amber); }
+.toast-info    .toast-icon { background: rgba(34, 211, 238, 0.14); color: var(--teal); }
+
+.toast-success { border-color: rgba(56, 242, 166, 0.22); }
+.toast-error   { border-color: rgba(251, 113, 133, 0.22); }
+.toast-warning { border-color: rgba(251, 191, 36, 0.22); }
+
+.toast-msg {
+  flex: 1;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--soft);
+}
+
+.toast-close {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 160ms ease;
+}
+
+.toast-close:hover { color: var(--text); }
+
+/* ── Bottom Nav enhanced ──────────────────────────────────────── */
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+}
+
+.bottom-nav a span {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.bottom-nav-add {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--green), #b7ffe1);
+  color: #04150e;
+  font-size: 1.5rem;
+  font-weight: 900;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(56, 242, 166, 0.35);
+  cursor: pointer;
+  transition: transform 160ms ease;
+  line-height: 1;
+}
+
+.bottom-nav-add:hover { transform: scale(1.1); }
+
+/* ── Hero panel extras ─────────────────────────────────────────── */
+.hero-text { flex: 1; min-width: 0; }
+
+.hero-badges {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  border-radius: 999px;
+  color: var(--amber);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+/* ── Metric card extras ─────────────────────────────────────────── */
+.metric-insight {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ── Macro donut ───────────────────────────────────────────────── */
+.macro-donut-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.macro-donut {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.12);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.macro-donut::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  background: var(--panel-strong);
+  border-radius: 50%;
+}
+
+.macro-donut-legend {
+  display: flex;
+  gap: 0.65rem;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.macro-donut-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.macro-donut-legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Weekly bar charts ─────────────────────────────────────────── */
+.charts-panel {
+  padding: 1.25rem;
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.chart-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.3rem;
+  height: 100px;
+}
+
+.chart-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  height: 100%;
+}
+
+.chart-bar-val {
+  font-size: 0.6rem;
+  color: var(--muted);
+  line-height: 1;
+  height: 14px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.chart-bar-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.chart-bar {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 4px 4px 0 0;
+  transition: height 500ms var(--ease);
+}
+
+.chart-bar-label {
+  font-size: 0.62rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.chart-bar-label.today {
+  color: var(--green);
+}
+
+/* ── Recommendation cards ─────────────────────────────────────── */
+.recommendation-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.rec-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 0.1rem;
+}
+
+.recommendation-card strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.recommendation-card span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* ── Activity empty ──────────────────────────────────────────── */
+.activity-empty {
+  font-size: 0.84rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 0.75rem;
+}
+
+/* ── Profile panel / settings ─────────────────────────────────── */
+.profile-panel {
+  padding: 1.25rem;
+}
+
+.profile-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.profile-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.profile-form label span {
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.custom-macros {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+/* ── Food drawer nutrient grid ────────────────────────────────── */
+.nutrient-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+/* ── Autocomplete ──────────────────────────────────────────────── */
+.autocomplete-field {
+  position: relative;
+  z-index: 10;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: rgba(10, 18, 32, 0.98);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(24px);
+}
+
+.suggestion-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.suggestion-item:last-child { border-bottom: 0; }
+.suggestion-item:hover { background: rgba(56, 242, 166, 0.06); }
+
+.suggestion-item strong {
+  color: var(--text);
+  font-size: 0.88rem;
+  text-transform: capitalize;
+}
+
+.suggestion-item span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* ── Meal group & food row ─────────────────────────────────────── */
+.meal-heading-left {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.meal-emoji { font-size: 1.1rem; }
+
+.meal-total-cal {
+  color: var(--green);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.food-info { min-width: 0; }
+
+.food-side {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.food-kcal {
+  color: var(--green);
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+
+/* ── Empty state ──────────────────────────────────────────────── */
+.empty-state {
+  display: grid;
+  place-items: center;
+  gap: 0.45rem;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.empty-icon { font-size: 2.5rem; }
+.empty-state strong { color: var(--text); display: block; }
+.empty-state span { font-size: 0.86rem; }
+
+/* ── Header actions ───────────────────────────────────────────── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Mini AI chat extras ──────────────────────────────────────── */
+.mini-ai-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--line);
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.mini-ai-close {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.ai-message {
+  padding: 0.7rem 0.85rem;
+  border-radius: 14px;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  animation: item-in 220ms var(--ease);
+}
+
+.ai-message.ai {
+  color: var(--soft);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+}
+
+.ai-message.user {
+  color: #ecfeff;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(56, 242, 166, 0.06));
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  text-align: right;
+}
+
+/* ── Insight card variants ────────────────────────────────────── */
+.insight-card.success { border-color: rgba(56, 242, 166, 0.28); }
+.insight-card.warning { border-color: rgba(251, 191, 36, 0.30); }
+.insight-card.info    { border-color: rgba(34, 211, 238, 0.22); }
+
+/* ── Water actions extended ──────────────────────────────────── */
+.water-text {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.water-text strong {
+  font-size: 1.5rem;
+  display: block;
+}
+
+.water-text span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+/* ── Light mode overrides ─────────────────────────────────────── */
+body.light-mode {
+  color: #0f172a;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(56, 242, 166, 0.08), transparent 28rem),
+    linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #eff6ff 100%);
+}
+
+body.light-mode .glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(148, 163, 184, 0.24);
+}
+
+body.light-mode .app-header {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(148, 163, 184, 0.24);
+}
+
+body.light-mode input,
+body.light-mode select {
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  border-color: rgba(148, 163, 184, 0.36);
+}
+
+body.light-mode .eyebrow { color: var(--green); }
+body.light-mode .metric-header span,
+body.light-mode .goal-row span,
+body.light-mode .metric-insight,
+body.light-mode .muted { color: #64748b; }
+
+body.light-mode .app-toast {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+body.light-mode .autocomplete-list {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+body.light-mode .suggestion-item strong { color: #0f172a; }
+
+/* ── App header updated for 4 items ──────────────────────────── */
+.app-header {
+  grid-template-columns: 1fr auto auto auto;
+}

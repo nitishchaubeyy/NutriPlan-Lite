@@ -1,0 +1,157 @@
+/* Responsive layout for NutriPlan Lite */
+
+/* Base overrides (Mobile first) */
+.app-shell {
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  inset: auto 0 0 0;
+  background: var(--panel-strong);
+  border-top: 1px solid var(--line);
+  padding: 0.8rem 0 calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  backdrop-filter: blur(24px);
+}
+
+.bottom-nav a, 
+.bottom-nav button {
+  padding: 0.5rem;
+  color: var(--muted);
+  font-weight: 850;
+  font-size: 0.9rem;
+  background: transparent;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.bottom-nav a:hover, 
+.bottom-nav button:hover {
+  color: var(--green);
+}
+
+.desktop-nav {
+  display: none;
+}
+
+/* Small Mobile (320px) */
+@media (max-width: 359px) {
+  .date-card span {
+    display: none;
+  }
+  
+  .hero-panel h1 {
+    font-size: 2rem;
+  }
+
+  .water-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile landscape / Phablets (480px) */
+@media (min-width: 480px) {
+  .summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .water-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets (768px) */
+@media (min-width: 768px) {
+  .app-shell {
+    padding: 1rem;
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .dashboard-layout {
+    gap: 1.5rem;
+  }
+
+  .form-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+
+  .desktop-nav {
+    display: flex;
+  }
+  
+  .hero-panel {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Small Desktops / Laptops (1024px) */
+@media (min-width: 1024px) {
+  .dashboard-layout {
+    grid-template-columns: 2.2fr 1fr;
+    align-items: start;
+    gap: 1rem;
+  }
+  
+  .summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+/* Large screens (1440px & Ultrawide) */
+@media (min-width: 1440px) {
+  .app-shell {
+    width: min(2560px, calc(100% - 4rem));
+    padding: 2rem 0 5rem;
+  }
+  
+  .summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+/* Charts responsive */
+@media (max-width: 640px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bar-chart {
+    height: 80px;
+  }
+
+  .chart-bar-val {
+    display: none;
+  }
+
+  .nutrient-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .macro-mini-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+

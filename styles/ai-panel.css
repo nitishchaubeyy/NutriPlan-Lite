@@ -1,0 +1,133 @@
+.ai-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.ai-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ai-panel h2 {
+  margin: 0.1rem 0 0;
+}
+
+.insight-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.insight-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  animation: item-in 220ms var(--ease);
+}
+
+.insight-card strong {
+  color: var(--text);
+}
+
+.insight-card span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.insight-card.warning {
+  border-color: rgba(251, 191, 36, 0.32);
+}
+
+.insight-card.success {
+  border-color: rgba(56, 242, 166, 0.28);
+}
+
+.mini-ai {
+  position: fixed;
+  right: calc(max(1rem, 50vw - 1280px + 1rem));
+  bottom: 1rem;
+  z-index: 70;
+  width: min(380px, calc(100vw - 2rem));
+  overflow: hidden;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px);
+  transition: width 250ms var(--ease), border-radius 250ms var(--ease);
+}
+
+.mini-ai-toggle {
+  width: 100%;
+  min-height: 48px;
+  color: #04150e;
+  background: linear-gradient(135deg, var(--green), #b7ffe1);
+  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mini-ai.collapsed {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.mini-ai.collapsed .mini-ai-toggle {
+  height: 56px;
+  min-height: 56px;
+  font-size: 0;
+}
+
+.mini-ai.collapsed .mini-ai-toggle::after {
+  content: "✨";
+  font-size: 1.5rem;
+}
+
+.mini-ai-body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.mini-ai.collapsed .mini-ai-body {
+  display: none;
+}
+
+.mini-ai-feed {
+  display: grid;
+  gap: 0.55rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.ai-message {
+  padding: 0.7rem;
+  color: var(--soft);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+
+.mini-ai-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+}
+
+.mini-ai-form button {
+  min-height: 42px;
+  padding: 0 0.85rem;
+  color: #04150e;
+  background: var(--green);
+  border-radius: 12px;
+  font-weight: 900;
+}

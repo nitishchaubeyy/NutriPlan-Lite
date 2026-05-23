@@ -1,0 +1,34 @@
+<div class="ai-helper-layout">
+  <div class="ai-chat-container glass-panel">
+    <div class="ai-chat-header">
+      <div class="ai-bot-info">
+        <span class="bot-avatar">🤖</span>
+        <div>
+          <h2>NutriPlan AI Coach</h2>
+          <small class="status-online">● Online and ready to help</small>
+        </div>
+      </div>
+      <button class="icon-button" id="clear-ai-chat" title="Clear Chat">🗑️</button>
+    </div>
+    
+    <div class="ai-chat-messages" id="main-ai-feed" aria-live="polite">
+      <!-- Chat bubbles will go here -->
+      <div class="chat-bubble ai-bubble">
+        <p>Hello! I'm your dedicated AI nutrition assistant. I analyze your meals, hydration, and goals to give you personalized recommendations.</p>
+        <p>Try asking me about your daily progress or for a meal suggestion!</p>
+      </div>
+    </div>
+
+    <div class="ai-suggestions" id="ai-quick-prompts">
+      <button class="prompt-btn">Analyze my daily intake</button>
+      <button class="prompt-btn">Suggest a high-protein dinner</button>
+      <button class="prompt-btn">How's my hydration?</button>
+      <button class="prompt-btn">Give me a health tip</button>
+    </div>
+
+    <form class="ai-chat-input-area" id="main-ai-form">
+      <input type="text" id="main-ai-input" placeholder="Message NutriPlan AI..." autocomplete="off">
+      <button type="submit" class="primary-button send-btn" aria-label="Send message">↑</button>
+    </form>
+  </div>
+</div>
