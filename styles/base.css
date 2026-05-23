@@ -177,6 +177,13 @@ a {
   padding: 0 0.85rem;
 }
 
+.green-button {
+  color: #04150e;
+  background: linear-gradient(135deg, #1dbc7d, #96f7c6);
+  border-color: transparent;
+  box-shadow: 0 14px 28px rgba(29, 188, 125, 0.18);
+}
+
 .icon-button {
   width: 42px;
 }

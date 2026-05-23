@@ -175,7 +175,14 @@
   gap: 1rem;
 }
 
-.metric-header span,
+.metric-header span {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .goal-row span,
 .metric-card p {
   color: var(--muted);
@@ -297,6 +304,32 @@
   font-size: 0.84rem;
 }
 
-.bottom-nav {
-  display: none;
+.diet-plan {
+  margin-top: 0.75rem;
+  padding: 0.8rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
 }
+
+.diet-plan-item {
+  margin-bottom: 0.75rem;
+}
+
+.diet-plan-item:last-child {
+  margin-bottom: 0;
+}
+
+.diet-plan-item strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.diet-plan-item span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
