@@ -1,0 +1,66 @@
+.hydration-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.water-visual {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.water-visual strong,
+.water-visual span {
+  display: block;
+}
+
+.water-visual strong {
+  font-size: 1.6rem;
+}
+
+.water-visual span {
+  color: var(--muted);
+}
+
+.water-bottle {
+  position: relative;
+  width: 76px;
+  height: 116px;
+  overflow: hidden;
+  border: 2px solid rgba(148, 163, 184, 0.34);
+  border-top: 0;
+  border-radius: 4px 4px 22px 22px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+#water-fill {
+  position: absolute;
+  inset: auto 0 0;
+  height: 0%;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.62), rgba(14, 165, 233, 0.85));
+  transition: height 600ms var(--ease);
+}
+
+
+.water-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.55rem;
+}
+
+.water-actions button:last-child {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  background: rgba(148, 163, 184, 0.06);
+  border-color: var(--line);
+}
+
+.water-actions button {
+  min-height: 38px;
+  color: var(--teal);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.16);
+  border-radius: 12px;
+  font-weight: 850;
+}

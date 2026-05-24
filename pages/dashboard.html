@@ -1,0 +1,197 @@
+<div class="dashboard-layout">
+  <!-- Hero Panel -->
+  <section class="hero-panel glass-panel">
+    <div class="hero-text">
+      <p class="eyebrow">Daily Readiness</p>
+      <h1>Track smarter.<br>Eat with intent.</h1>
+      <p class="hero-copy">A unified dashboard for calories, macros, hydration, and AI-powered meal recommendations.</p>
+      <div class="hero-badges">
+        <span class="streak-badge">🔥 <span id="streak-count">0</span>-day streak</span>
+      </div>
+    </div>
+    <div class="health-score" aria-label="Nutrition score">
+      <div class="score-ring" id="nutrition-score-ring" style="--progress: 0%">
+        <span id="nutrition-score">0</span>
+      </div>
+      <small>Nutrition score</small>
+    </div>
+  </section>
+
+  <!-- Summary Metric Cards -->
+  <section class="summary-grid" aria-label="Daily summary">
+    <!-- Calories Card -->
+    <article class="metric-card glass-panel" id="calories-card">
+      <div class="metric-header">
+        <span>Calories</span>
+        <strong id="calorie-balance-label">Not Started</strong>
+      </div>
+      <div class="metric-main">
+        <span id="calories-consumed">0</span>
+        <small>/<span id="calories-goal">0</span> kcal</small>
+      </div>
+      <div class="progress-track">
+        <div id="calories-progress" class="progress-fill fill-green" style="width:0%"></div>
+      </div>
+      <p id="calorie-insight" class="metric-insight">Start logging to track today.</p>
+    </article>
+
+    <!-- Macros Card -->
+    <article class="metric-card glass-panel" id="macros-card">
+      <div class="metric-header">
+        <span>Macros</span>
+        <strong id="macro-balance-label">Tracking</strong>
+      </div>
+      <div class="macro-mini-grid">
+        <div>
+          <span>Protein</span>
+          <strong><span id="protein-consumed">0</span>/<span id="protein-goal">0</span>g</strong>
+        </div>
+        <div>
+          <span>Carbs</span>
+          <strong><span id="carbs-consumed">0</span>/<span id="carbs-goal">0</span>g</strong>
+        </div>
+        <div>
+          <span>Fats</span>
+          <strong><span id="fats-consumed">0</span>/<span id="fats-goal">0</span>g</strong>
+        </div>
+      </div>
+      <div class="macro-bars">
+        <div class="progress-track"><div id="protein-progress" class="progress-fill fill-amber" style="width:0%"></div></div>
+        <div class="progress-track"><div id="carbs-progress" class="progress-fill fill-cyan" style="width:0%"></div></div>
+        <div class="progress-track"><div id="fats-progress" class="progress-fill fill-rose" style="width:0%"></div></div>
+      </div>
+      <!-- Macro donut -->
+      <div class="macro-donut-row">
+        <div id="macro-donut" class="macro-donut" aria-hidden="true"></div>
+        <div class="macro-donut-legend">
+          <span><i style="background:var(--amber)"></i>P</span>
+          <span><i style="background:var(--teal)"></i>C</span>
+          <span><i style="background:var(--rose)"></i>F</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Hydration Card -->
+    <article class="metric-card hydration-summary glass-panel" id="hydration-card">
+      <div class="metric-header">
+        <span>Hydration</span>
+        <strong id="hydration-label">None Yet</strong>
+      </div>
+      <div class="mini-ring" id="water-ring" style="--progress: 0%">
+        <span id="water-percent">0%</span>
+      </div>
+      <p><span id="water-consumed">0</span> / <span id="water-goal">0</span> ml</p>
+    </article>
+
+    <!-- Goals Card -->
+    <article class="metric-card glass-panel" id="goals-card">
+      <div class="metric-header">
+        <span>Goal</span>
+        <strong>Targets</strong>
+      </div>
+      <div class="goal-row">
+        <span>Maintenance</span>
+        <strong id="maintenance-calories">0 kcal</strong>
+      </div>
+      <div class="goal-row">
+        <span>Calorie target</span>
+        <strong id="target-display">—</strong>
+      </div>
+      <div class="goal-row">
+        <span>Water target</span>
+        <strong id="water-target-display">—</strong>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Main tracker column ─────────────────────────────── -->
+  <section id="meals" class="tracker-column">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Nutrition Tracking</p>
+        <h2>Meal timeline</h2>
+      </div>
+      <button class="primary-button" type="button" data-open-food-drawer>+ Add Food</button>
+    </div>
+
+    <!-- Search & filter -->
+    <div class="glass-panel search-panel">
+      <label class="search-field">
+        <span class="sr-only">Search food logs</span>
+        <input id="food-search" type="search" placeholder="Search meals, ingredients…">
+      </label>
+      <div class="quick-filters" aria-label="Meal filters">
+        <button type="button" class="active" data-filter="all">All</button>
+        <button type="button" data-filter="breakfast">Breakfast</button>
+        <button type="button" data-filter="lunch">Lunch</button>
+        <button type="button" data-filter="dinner">Dinner</button>
+        <button type="button" data-filter="snacks">Snacks</button>
+      </div>
+    </div>
+
+    <!-- Meal timeline list -->
+    <div id="meal-timeline" class="meal-timeline" aria-live="polite"></div>
+
+    <!-- Weekly Charts -->
+    <section class="glass-panel charts-panel">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">Weekly Analytics</p>
+          <h2>7-day trends</h2>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-block">
+          <p class="chart-label">Calories (7 days)</p>
+          <div id="weekly-calories-chart" class="bar-chart" aria-label="Weekly calorie bar chart"></div>
+        </div>
+        <div class="chart-block">
+          <p class="chart-label">Hydration (7 days)</p>
+          <div id="weekly-water-chart" class="bar-chart" aria-label="Weekly hydration bar chart"></div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="side-column">
+
+    <!-- Recommendations -->
+    <section class="recommendations glass-panel">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">Recommendations</p>
+          <h2>Next best actions</h2>
+        </div>
+      </div>
+      <div id="recommendation-list" class="recommendation-list"></div>
+    </section>
+
+    <!-- Hydration Panel -->
+    <section class="hydration-panel glass-panel">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">Hydration</p>
+          <h2>Water tracker</h2>
+        </div>
+        <button class="secondary-button" type="button" data-add-water="250">+ Water</button>
+      </div>
+      <div class="water-visual">
+        <div class="water-bottle" aria-hidden="true">
+          <div id="water-fill"></div>
+        </div>
+        <div class="water-text">
+          <strong><span id="water-consumed-large">0</span> ml</strong>
+          <span>of <span id="water-target-large">0</span> ml target</span>
+        </div>
+      </div>
+      <div class="water-actions">
+        <button type="button" data-add-water="100">+100ml</button>
+        <button type="button" data-add-water="250">+250ml</button>
+        <button type="button" data-add-water="500">+500ml</button>
+        <button type="button" data-reset-water>Reset</button>
+      </div>
+    </section>
+
+  </aside>
+</div>

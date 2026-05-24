@@ -1,0 +1,302 @@
+.app-shell {
+  width: min(1440px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 0.5rem 0 2rem;
+}
+
+.app-header {
+  position: sticky;
+  top: 1rem;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  min-height: 64px;
+  padding: 0.6rem 1rem;
+  background: rgba(7, 12, 22, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brand-mark {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  color: #04150e;
+  background: linear-gradient(135deg, var(--green), #b7ffe1);
+  border-radius: 16px;
+  font-weight: 950;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand small,
+.date-card span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.date-card,
+.desktop-nav {
+  display: flex;
+  align-items: center;
+}
+
+.date-card {
+  gap: 0.45rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.date-card div {
+  min-width: 100px;
+  text-align: center;
+}
+
+.date-card strong {
+  display: block;
+  font-size: 0.88rem;
+}
+
+.desktop-nav {
+  gap: 0.35rem;
+}
+
+.desktop-nav a {
+  padding: 0.65rem 0.8rem;
+  color: var(--muted);
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.desktop-nav a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.hero-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.hero-panel h1 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.hero-copy {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.health-score {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+}
+
+.health-score small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.score-ring,
+.mini-ring {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, var(--panel-strong) 0 58%, transparent 59%),
+    conic-gradient(var(--green) var(--progress), rgba(148, 163, 184, 0.15) 0);
+  transition: background 500ms var(--ease);
+}
+
+.score-ring {
+  width: 120px;
+  height: 120px;
+}
+
+.score-ring span {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.summary-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.metric-card {
+  display: grid;
+  gap: 1rem;
+  height: auto;
+  min-height: fit-content;
+  padding: 1.25rem;
+}
+
+.metric-header,
+.section-heading,
+.goal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.metric-header span,
+.goal-row span,
+.metric-card p {
+  color: var(--muted);
+}
+
+.metric-header strong {
+  color: var(--green);
+  font-size: 0.82rem;
+}
+
+.metric-main span {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.metric-main small {
+  color: var(--muted);
+}
+
+.macro-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.macro-mini-grid div,
+.goal-row {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.macro-mini-grid span,
+.macro-mini-grid strong {
+  display: block;
+}
+
+.macro-mini-grid span {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.macro-bars {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.hydration-summary {
+  justify-items: center;
+  text-align: center;
+}
+
+.mini-ring {
+  width: 80px;
+  height: 80px;
+}
+
+.mini-ring span {
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.tracker-column,
+.side-column {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.section-heading {
+  margin-bottom: 0.85rem;
+}
+
+.section-heading.compact {
+  margin-bottom: 0;
+}
+
+.section-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.25rem;
+}
+
+.activity-panel,
+.recommendations {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.activity-list,
+.recommendation-list {
+  display: grid;
+  gap: 0.75rem;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.activity-item,
+.recommendation-card {
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.activity-item strong,
+.activity-item span,
+.recommendation-card strong,
+.recommendation-card span {
+  display: block;
+}
+
+.activity-item span,
+.recommendation-card span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.bottom-nav {
+  display: none;
+}

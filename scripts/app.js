@@ -1,0 +1,125 @@
+// ================================================================
+// app.js — App entry point, toast notifications, global wiring
+// NutriPlan-Lite
+// ================================================================
+
+// ── Toast notification system ──────────────────────────────────────
+window.Toast = (() => {
+  function show(message, type = 'info', duration = 3500) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      document.body.appendChild(container);
+    }
+    const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+    const toast = document.createElement('div');
+    toast.className = `app-toast toast-${type}`;
+    toast.innerHTML = `
+      <span class="toast-icon">${icons[type] || icons.info}</span>
+      <span class="toast-msg"></span>
+      <button class="toast-close" type="button" aria-label="Dismiss">×</button>`;
+    toast.querySelector('.toast-msg').textContent = message;
+    toast.querySelector('.toast-close').addEventListener('click', () => dismiss(toast));
+    container.appendChild(toast);
+    // Auto-dismiss
+    setTimeout(() => dismiss(toast), duration);
+    return toast;
+  }
+
+  function dismiss(toast) {
+    if (!toast || toast.classList.contains('toast-leaving')) return;
+    toast.classList.add('toast-leaving');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  }
+
+  return { show };
+})();
+
+// ── Global App controller ──────────────────────────────────────────
+window.App = (() => {
+
+  function refresh() {
+    Dashboard.refresh();
+  }
+
+  async function init() {
+    // Initialise all modules
+    await Tracker.init();
+    Hydration.init();
+    AI.init();
+    Dashboard.initProfilePanel();
+
+    // Initial UI render
+    refresh();
+
+    // Bottom nav / mobile navigation
+    document.querySelectorAll('[data-nav]').forEach(link => {
+      link.addEventListener('click', e => {
+        const target = link.dataset.nav;
+        const section = document.getElementById(target);
+        if (section) {
+          e.preventDefault();
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Dark/light theme toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      const settings = Storage.getSettings();
+      if (settings.theme === 'light') document.body.classList.add('light-mode');
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        Storage.saveSettings({ theme: isLight ? 'light' : 'dark' });
+        themeBtn.textContent = isLight ? '🌙' : '☀️';
+      });
+      themeBtn.textContent = settings.theme === 'light' ? '🌙' : '☀️';
+    }
+  }
+
+  return { init, refresh };
+})();
+
+// ── Boot ─────────────────────────────────────────────────────────
+window.addEventListener('pageLoaded', async (e) => {
+  const page = e.detail.page;
+  
+  if (page === 'dashboard') {
+    await Tracker.init();
+    Hydration.init();
+    Dashboard.initProfilePanel();
+    
+    if (!window.Storage.getProfile().isSetup) {
+      const modal = document.getElementById('onboarding-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    
+    App.refresh();
+  } else if (page === 'ai-helper') {
+    if (window.AI) AI.initMainChat();
+  }
+
+  // Global theme toggle (always available in headers)
+  const themeBtns = document.querySelectorAll('.theme-btn, #theme-toggle');
+  themeBtns.forEach(themeBtn => {
+    if (!themeBtn.dataset.initialized) {
+      themeBtn.dataset.initialized = 'true';
+      const settings = Storage.getSettings();
+      if (settings.theme === 'light') document.body.classList.add('light-mode');
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        Storage.saveSettings({ theme: isLight ? 'light' : 'dark' });
+        
+        // Update all theme buttons to stay in sync
+        document.querySelectorAll('.theme-btn, #theme-toggle').forEach(btn => {
+          btn.textContent = isLight ? '🌙' : '☀️';
+        });
+      });
+      themeBtn.textContent = settings.theme === 'light' ? '🌙' : '☀️';
+    }
+  });
+});

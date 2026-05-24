@@ -1,134 +1,46 @@
 {
-    "apple": {
-        "cal": 52
-    },
-    "banana": {
-        "cal": 89
-    },
-    "orange": {
-        "cal": 47
-    },
-    "mango": {
-        "cal": 60
-    },
-    "grapes": {
-        "cal": 69
-    },
-    "papaya": {
-        "cal": 43
-    },
-    "pineapple": {
-        "cal": 50
-    },
-    "rice": {
-        "cal": 130
-    },
-    "wheat roti": {
-        "cal": 297
-    },
-    "bread": {
-        "cal": 265
-    },
-    "brown bread": {
-        "cal": 247
-    },
-    "pasta": {
-        "cal": 131
-    },
-    "oats": {
-        "cal": 389
-    },
-    "corn": {
-        "cal": 96
-    },
-    "potato": {
-        "cal": 77
-    },
-    "sweet potato": {
-        "cal": 86
-    },
-    "tomato": {
-        "cal": 18
-    },
-    "onion": {
-        "cal": 40
-    },
-    "carrot": {
-        "cal": 41
-    },
-    "spinach": {
-        "cal": 23
-    },
-    "broccoli": {
-        "cal": 34
-    },
-    "cabbage": {
-        "cal": 25
-    },
-    "milk": {
-        "cal": 42
-    },
-    "curd": {
-        "cal": 59
-    },
-    "cheese": {
-        "cal": 402
-    },
-    "butter": {
-        "cal": 717
-    },
-    "paneer": {
-        "cal": 265
-    },
-    "tofu": {
-        "cal": 76
-    },
-    "egg": {
-        "cal": 155
-    },
-    "chicken breast": {
-        "cal": 165
-    },
-    "fish": {
-        "cal": 206
-    },
-    "mutton": {
-        "cal": 294
-    },
-    "dal": {
-        "cal": 116
-    },
-    "chickpeas": {
-        "cal": 164
-    },
-    "rajma": {
-        "cal": 127
-    },
-    "soybeans": {
-        "cal": 446
-    },
-    "almonds": {
-        "cal": 579
-    },
-    "cashews": {
-        "cal": 553
-    },
-    "peanuts": {
-        "cal": 567
-    },
-    "walnuts": {
-        "cal": 654
-    },
-    "sugar": {
-        "cal": 387
-    },
-    "honey": {
-        "cal": 304
-    },
-    "oil": {
-        "cal": 884
-    },
-    "ghee": {
-        "cal": 900
-    }
+    "apple": { "cal": 52, "carbs": 14, "protein": 0.3, "fat": 0.2 },
+    "banana": { "cal": 89, "carbs": 23, "protein": 1.1, "fat": 0.3 },
+    "orange": { "cal": 47, "carbs": 12, "protein": 0.9, "fat": 0.1 },
+    "mango": { "cal": 60, "carbs": 15, "protein": 0.8, "fat": 0.4 },
+    "grapes": { "cal": 69, "carbs": 18, "protein": 0.7, "fat": 0.2 },
+    "papaya": { "cal": 43, "carbs": 11, "protein": 0.5, "fat": 0.3 },
+    "pineapple": { "cal": 50, "carbs": 13, "protein": 0.5, "fat": 0.1 },
+    "rice": { "cal": 130, "carbs": 28, "protein": 2.7, "fat": 0.3 },
+    "wheat roti": { "cal": 297, "carbs": 60, "protein": 10.5, "fat": 1.5 },
+    "bread": { "cal": 265, "carbs": 49, "protein": 9, "fat": 3.2 },
+    "brown bread": { "cal": 247, "carbs": 43, "protein": 13, "fat": 3.4 },
+    "pasta": { "cal": 131, "carbs": 25, "protein": 5, "fat": 1.1 },
+    "oats": { "cal": 389, "carbs": 66, "protein": 16.9, "fat": 6.9 },
+    "corn": { "cal": 96, "carbs": 21, "protein": 3.4, "fat": 1.5 },
+    "potato": { "cal": 77, "carbs": 17, "protein": 2, "fat": 0.1 },
+    "sweet potato": { "cal": 86, "carbs": 20, "protein": 1.6, "fat": 0.1 },
+    "tomato": { "cal": 18, "carbs": 3.9, "protein": 0.9, "fat": 0.2 },
+    "onion": { "cal": 40, "carbs": 9.3, "protein": 1.1, "fat": 0.1 },
+    "carrot": { "cal": 41, "carbs": 9.6, "protein": 0.9, "fat": 0.2 },
+    "spinach": { "cal": 23, "carbs": 3.6, "protein": 2.9, "fat": 0.4 },
+    "broccoli": { "cal": 34, "carbs": 7, "protein": 2.8, "fat": 0.4 },
+    "cabbage": { "cal": 25, "carbs": 6, "protein": 1.3, "fat": 0.1 },
+    "milk": { "cal": 42, "carbs": 5, "protein": 3.4, "fat": 1 },
+    "curd": { "cal": 59, "carbs": 4.7, "protein": 3.5, "fat": 3.3 },
+    "cheese": { "cal": 402, "carbs": 1.3, "protein": 25, "fat": 33 },
+    "butter": { "cal": 717, "carbs": 0.1, "protein": 0.9, "fat": 81 },
+    "paneer": { "cal": 265, "carbs": 1.2, "protein": 18, "fat": 20 },
+    "tofu": { "cal": 76, "carbs": 1.9, "protein": 8, "fat": 4.8 },
+    "egg": { "cal": 155, "carbs": 1.1, "protein": 13, "fat": 11 },
+    "chicken breast": { "cal": 165, "carbs": 0, "protein": 31, "fat": 3.6 },
+    "fish": { "cal": 206, "carbs": 0, "protein": 22, "fat": 12 },
+    "mutton": { "cal": 294, "carbs": 0, "protein": 25, "fat": 21 },
+    "dal": { "cal": 116, "carbs": 20, "protein": 8, "fat": 0.5 },
+    "chickpeas": { "cal": 164, "carbs": 27, "protein": 9, "fat": 2.6 },
+    "rajma": { "cal": 127, "carbs": 22, "protein": 9, "fat": 0.5 },
+    "soybeans": { "cal": 446, "carbs": 30, "protein": 36, "fat": 20 },
+    "almonds": { "cal": 579, "carbs": 22, "protein": 21, "fat": 49 },
+    "cashews": { "cal": 553, "carbs": 30, "protein": 18, "fat": 44 },
+    "peanuts": { "cal": 567, "carbs": 16, "protein": 26, "fat": 49 },
+    "walnuts": { "cal": 654, "carbs": 14, "protein": 15, "fat": 65 },
+    "sugar": { "cal": 387, "carbs": 100, "protein": 0, "fat": 0 },
+    "honey": { "cal": 304, "carbs": 82, "protein": 0.3, "fat": 0 },
+    "oil": { "cal": 884, "carbs": 0, "protein": 0, "fat": 100 },
+    "ghee": { "cal": 900, "carbs": 0, "protein": 0, "fat": 100 }
 }
