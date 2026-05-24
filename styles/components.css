@@ -557,3 +557,83 @@ body.light-mode .suggestion-item strong { color: #0f172a; }
 .app-header {
   grid-template-columns: 1fr auto auto auto;
 }
+
+/* ── Authentication UI ────────────────────────────────────────── */
+.auth-status-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-user-email {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--soft);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+body.light-mode .auth-user-email {
+  background: rgba(0, 0, 0, 0.03);
+  color: #0f172a;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.auth-tab-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 160ms ease;
+}
+
+.auth-tab-btn.active {
+  color: var(--green);
+}
+
+.auth-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.55rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--green);
+}
+
+.auth-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.auth-form-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.auth-form-group label span {
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

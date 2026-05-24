@@ -44,6 +44,10 @@ window.App = (() => {
   }
 
   async function init() {
+    if (window.Auth && window.Auth.isAuthenticated() && window.Storage && window.Storage.sync) {
+      await window.Storage.sync();
+    }
+
     // Initialise all modules
     await Tracker.init();
     Hydration.init();
@@ -86,8 +90,14 @@ window.App = (() => {
 // ── Boot ─────────────────────────────────────────────────────────
 window.addEventListener('pageLoaded', async (e) => {
   const page = e.detail.page;
+
+  if (window.Auth) window.Auth.renderAuthWidgets();
   
   if (page === 'dashboard') {
+    if (window.Auth && window.Auth.isAuthenticated() && window.Storage && window.Storage.sync) {
+      await window.Storage.sync();
+    }
+
     await Tracker.init();
     Hydration.init();
     Dashboard.initProfilePanel();

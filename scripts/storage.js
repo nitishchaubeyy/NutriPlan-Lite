@@ -61,6 +61,14 @@ function saveProfile(updates) {
   const db = loadDB();
   db.profile = { ...db.profile, ...updates };
   saveDB(db);
+
+  if (window.Auth && window.Auth.isAuthenticated()) {
+    window.Auth.apiRequest('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(mapFrontendToBackendProfile(db.profile))
+    }).catch(err => console.error("Profile sync failed:", err));
+  }
+
   return db.profile;
 }
 
@@ -99,13 +107,23 @@ function getFoods(dateKey) {
 function addFood(dateKey, entry) {
   const db = loadDB();
   if (!db.logs[dateKey]) db.logs[dateKey] = { foods: [], water: 0 };
+  
   const food = {
     id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     timestamp: new Date().toISOString(),
     ...entry
   };
+  
   db.logs[dateKey].foods.push(food);
   saveDB(db);
+
+  if (window.Auth && window.Auth.isAuthenticated()) {
+    window.Auth.apiRequest('/food-logs', {
+      method: 'POST',
+      body: JSON.stringify(mapFrontendToBackendFood(food, dateKey))
+    }).catch(err => console.error("Food log add failed:", err));
+  }
+
   return food;
 }
 
@@ -116,6 +134,14 @@ function updateFood(dateKey, id, updates) {
   if (idx !== -1) {
     db.logs[dateKey].foods[idx] = { ...db.logs[dateKey].foods[idx], ...updates };
     saveDB(db);
+
+    if (window.Auth && window.Auth.isAuthenticated()) {
+      const updatedFood = db.logs[dateKey].foods[idx];
+      window.Auth.apiRequest(`/food-logs/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(mapFrontendToBackendFood(updatedFood, dateKey))
+      }).catch(err => console.error("Food log update failed:", err));
+    }
   }
 }
 
@@ -124,6 +150,12 @@ function deleteFood(dateKey, id) {
   if (!db.logs[dateKey]) return;
   db.logs[dateKey].foods = db.logs[dateKey].foods.filter(f => f.id !== id);
   saveDB(db);
+
+  if (window.Auth && window.Auth.isAuthenticated()) {
+    window.Auth.apiRequest(`/food-logs/${id}`, {
+      method: 'DELETE'
+    }).catch(err => console.error("Food log delete failed:", err));
+  }
 }
 
 // ── Hydration ─────────────────────────────────────────────────────
@@ -137,6 +169,17 @@ function addWater(dateKey, ml) {
   if (!db.logs[dateKey]) db.logs[dateKey] = { foods: [], water: 0 };
   db.logs[dateKey].water = (db.logs[dateKey].water || 0) + ml;
   saveDB(db);
+
+  if (window.Auth && window.Auth.isAuthenticated()) {
+    window.Auth.apiRequest('/water-logs', {
+      method: 'POST',
+      body: JSON.stringify({
+        amount_ml: ml,
+        log_date: dateKey
+      })
+    }).catch(err => console.error("Water log add failed:", err));
+  }
+
   return db.logs[dateKey].water;
 }
 
@@ -145,6 +188,28 @@ function setWater(dateKey, ml) {
   if (!db.logs[dateKey]) db.logs[dateKey] = { foods: [], water: 0 };
   db.logs[dateKey].water = ml;
   saveDB(db);
+
+  if (window.Auth && window.Auth.isAuthenticated()) {
+    if (ml === 0) {
+      window.Auth.apiRequest(`/water-logs/reset?date=${dateKey}`, {
+        method: 'DELETE'
+      }).catch(err => console.error("Water log reset failed:", err));
+    } else {
+      (async () => {
+        try {
+          await window.Auth.apiRequest(`/water-logs/reset?date=${dateKey}`, { method: 'DELETE' });
+          if (ml > 0) {
+            await window.Auth.apiRequest('/water-logs', {
+              method: 'POST',
+              body: JSON.stringify({ amount_ml: ml, log_date: dateKey })
+            });
+          }
+        } catch (err) {
+          console.error("Water log update failed:", err);
+        }
+      })();
+    }
+  }
 }
 
 // ── Weekly data for analytics ─────────────────────────────────────
@@ -204,6 +269,122 @@ function getStreak() {
     }
   }
   return streak;
+}
+
+// ── Mapping and Sync helpers ──────────────────────────────────────
+
+function mapFrontendToBackendProfile(fe) {
+  return {
+    age: fe.age !== undefined ? parseInt(fe.age, 10) : undefined,
+    weight: fe.weight !== undefined ? parseFloat(fe.weight) : undefined,
+    height: fe.height !== undefined ? parseFloat(fe.height) : undefined,
+    gender: fe.gender,
+    activity_level: fe.activity !== undefined ? parseFloat(fe.activity) : undefined,
+    fitness_goal: fe.goal,
+    macro_split: fe.macroSplit,
+    custom_protein: fe.customProtein !== undefined ? parseFloat(fe.customProtein) : undefined,
+    custom_carbs: fe.customCarbs !== undefined ? parseFloat(fe.customCarbs) : undefined,
+    custom_fat: fe.customFat !== undefined ? parseFloat(fe.customFat) : undefined,
+    water_target: fe.waterTarget !== undefined ? parseInt(fe.waterTarget, 10) : undefined
+  };
+}
+
+function mapBackendToFrontendProfile(be) {
+  if (!be) return null;
+  return {
+    isSetup: true,
+    name: 'User',
+    age: be.age !== null ? parseInt(be.age, 10) : 25,
+    weight: be.weight !== null ? parseFloat(be.weight) : 70,
+    height: be.height !== null ? parseFloat(be.height) : 175,
+    gender: be.gender || 'male',
+    activity: be.activity_level !== null ? parseFloat(be.activity_level) : 1.55,
+    goal: be.fitness_goal || 'maintain',
+    macroSplit: be.macro_split || 'balanced',
+    customProtein: be.custom_protein !== null ? parseFloat(be.custom_protein) : 25,
+    customCarbs: be.custom_carbs !== null ? parseFloat(be.custom_carbs) : 45,
+    customFat: be.custom_fat !== null ? parseFloat(be.custom_fat) : 30,
+    waterTarget: be.water_target !== null ? parseInt(be.water_target, 10) : 2500
+  };
+}
+
+function mapFrontendToBackendFood(fe, dateKey) {
+  return {
+    id: fe.id,
+    food_name: fe.name,
+    quantity_grams: fe.quantity,
+    calories: fe.calories,
+    protein: fe.protein || 0,
+    carbs: fe.carbs || 0,
+    fat: fe.fat || 0,
+    meal_type: fe.meal || 'breakfast',
+    log_date: dateKey
+  };
+}
+
+function mapBackendToFrontendFood(be) {
+  return {
+    id: be.id,
+    timestamp: be.created_at || new Date().toISOString(),
+    name: be.food_name,
+    meal: be.meal_type,
+    quantity: parseFloat(be.quantity_grams),
+    calories: parseInt(be.calories, 10),
+    protein: parseFloat(be.protein || 0),
+    carbs: parseFloat(be.carbs || 0),
+    fat: parseFloat(be.fat || 0)
+  };
+}
+
+function formatDate(dateVal) {
+  if (!dateVal) return todayKey();
+  const str = String(dateVal);
+  if (str.includes('T')) {
+    return str.split('T')[0];
+  }
+  return str;
+}
+
+async function sync() {
+  if (!window.Auth || !window.Auth.isAuthenticated()) return;
+  try {
+    const db = loadDB();
+
+    // 1. Sync Profile
+    const profileRes = await window.Auth.apiRequest('/auth/profile');
+    if (profileRes && profileRes.status === 'success' && profileRes.data && profileRes.data.profile) {
+      db.profile = mapBackendToFrontendProfile(profileRes.data.profile);
+    }
+
+    // 2. Sync All Food Logs
+    const foodsRes = await window.Auth.apiRequest('/food-logs');
+    const foodLogs = (foodsRes && foodsRes.data && foodsRes.data.foodLogs) || [];
+
+    // 3. Sync All Water Logs
+    const waterRes = await window.Auth.apiRequest('/water-logs');
+    const waterLogs = (waterRes && waterRes.data && waterRes.data.waterLogs) || [];
+
+    // Clear old logs so we only have what's on the server
+    db.logs = {};
+
+    // Rebuild logs
+    foodLogs.forEach(beFood => {
+      const dateKey = formatDate(beFood.log_date);
+      if (!db.logs[dateKey]) db.logs[dateKey] = { foods: [], water: 0 };
+      db.logs[dateKey].foods.push(mapBackendToFrontendFood(beFood));
+    });
+
+    waterLogs.forEach(beWater => {
+      const dateKey = formatDate(beWater.log_date);
+      if (!db.logs[dateKey]) db.logs[dateKey] = { foods: [], water: 0 };
+      db.logs[dateKey].water += parseInt(beWater.amount_ml || 0, 10);
+    });
+
+    saveDB(db);
+    console.log("Database synced with backend server successfully.");
+  } catch (e) {
+    console.error("Database sync failed:", e);
+  }
 }
 
 // Export as global

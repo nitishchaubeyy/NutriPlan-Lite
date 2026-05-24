@@ -26,6 +26,7 @@
   
   <!-- Scripts (load order matters) -->
   <script src="scripts/storage.js" defer></script>
+  <script src="scripts/auth.js" defer></script>
   <script src="scripts/analytics.js" defer></script>
   <script src="scripts/tracker.js" defer></script>
   <script src="scripts/hydration.js" defer></script>
@@ -56,6 +57,7 @@
         </nav>
 
         <div class="landing-header-actions">
+          <div id="landing-auth-status-container" class="auth-status-container"></div>
           <button id="theme-toggle-landing" class="icon-button theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">☀️</button>
           <a href="#dashboard" class="primary-button cta-launch" data-nav="dashboard">Get Started</a>
           <button class="icon-button mobile-menu-btn" type="button" aria-label="Mobile menu">☰</button>
@@ -89,6 +91,7 @@
       </nav>
 
       <div class="header-actions">
+        <div id="auth-status-container" class="auth-status-container"></div>
         <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme" title="Toggle theme">☀️</button>
       </div>
     </header>
@@ -565,6 +568,38 @@
       </div>
     </div>
   </template>
+
+  <!-- ── Auth Modal Drawer ────────────────────────────────────── -->
+  <div id="auth-modal" class="drawer hidden" role="dialog" aria-modal="true" aria-labelledby="auth-drawer-title">
+    <button class="drawer-backdrop" type="button" id="close-auth-backdrop" aria-label="Close auth drawer"></button>
+    <aside class="drawer-card">
+      <div class="drawer-handle" aria-hidden="true"></div>
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Account</p>
+          <h2 id="auth-drawer-title">Account Access</h2>
+        </div>
+        <button class="icon-button" type="button" id="close-auth-x" aria-label="Close">×</button>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button id="auth-tab-login" class="auth-tab-btn active" type="button" role="tab" aria-selected="true">Sign In</button>
+        <button id="auth-tab-register" class="auth-tab-btn" type="button" role="tab" aria-selected="false">Register</button>
+      </div>
+
+      <form id="auth-form" class="auth-form-group" autocomplete="on">
+        <label>
+          <span>Email Address</span>
+          <input id="auth-email" type="email" placeholder="email@example.com" required autocomplete="email">
+        </label>
+        <label>
+          <span>Password</span>
+          <input id="auth-password" type="password" placeholder="••••••••" required autocomplete="current-password">
+        </label>
+        <button id="auth-submit-btn" class="primary-button full-width" type="submit">Sign In</button>
+      </form>
+    </aside>
+  </div>
 
 </body>
 </html>
