@@ -27,6 +27,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <!-- html2canvas & jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   
   <!-- Scripts (load order matters) -->
   <script src="scripts/api.js" defer></script>
@@ -34,6 +37,7 @@
   <script src="scripts/storage.js" defer></script>
   <script src="scripts/auth.js" defer></script>
   <script src="scripts/analytics.js" defer></script>
+  <script src="scripts/reports.js" defer></script>
   <script src="scripts/tracker.js" defer></script>
   <script src="scripts/hydration.js" defer></script>
   <script src="scripts/dashboard.js" defer></script>
@@ -631,11 +635,14 @@
               <p class="eyebrow">Weekly Analytics</p>
               <h2>Nutrition Dashboard</h2>
             </div>
-            <!-- Chart Tabs -->
-            <div class="analytics-tabs" role="tablist" aria-label="Nutrition analytics charts">
-              <button class="tab-btn active" data-chart-tab="calorie" type="button" role="tab" aria-selected="true">Calorie Trends</button>
-              <button class="tab-btn" data-chart-tab="macro" type="button" role="tab" aria-selected="false">Macro Ratios</button>
-              <button class="tab-btn" data-chart-tab="water" type="button" role="tab" aria-selected="false">Hydration Log</button>
+            <div class="analytics-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <!-- Chart Tabs -->
+              <div class="analytics-tabs" role="tablist" aria-label="Nutrition analytics charts">
+                <button class="tab-btn active" data-chart-tab="calorie" type="button" role="tab" aria-selected="true">Calorie Trends</button>
+                <button class="tab-btn" data-chart-tab="macro" type="button" role="tab" aria-selected="false">Macro Ratios</button>
+                <button class="tab-btn" data-chart-tab="water" type="button" role="tab" aria-selected="false">Hydration Log</button>
+              </div>
+              <button id="btn-generate-report" class="secondary-button" type="button" style="gap:0.4rem; min-height:36px; font-size:0.8rem; border-radius:99px; font-weight:800; padding:0 0.85rem;" title="Generate Weekly PDF Report">📄 Report</button>
             </div>
           </div>
 
@@ -805,6 +812,117 @@
         <hr class="mobile-nav-divider">
         <div id="mobile-menu-auth-status" class="mobile-menu-auth-status"></div>
       </nav>
+    </aside>
+  </div>
+
+  <!-- ── Weekly Report Modal ──────────────────────────────────── -->
+  <div id="weekly-report-modal" class="drawer hidden" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <button class="drawer-backdrop" type="button" id="close-report-backdrop" aria-label="Close report overlay"></button>
+    <aside class="drawer-card report-drawer-card">
+      <div class="drawer-handle" aria-hidden="true"></div>
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Export Center</p>
+          <h2 id="report-modal-title">Weekly Report</h2>
+        </div>
+        <div class="drawer-header-actions" style="display:flex; gap:0.5rem; align-items:center;">
+          <button id="btn-export-pdf" class="primary-button" type="button" style="min-height:34px; padding:0 0.8rem; font-size:0.78rem;">Download PDF</button>
+          <button id="btn-export-csv" class="secondary-button" type="button" style="min-height:34px; padding:0 0.8rem; font-size:0.78rem;">Export CSV</button>
+          <button class="icon-button" type="button" id="close-report-x" style="min-height:34px; width:34px;" aria-label="Close report modal">×</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Printable Report Container -->
+      <div class="report-scroll-container">
+        <div id="nutrition-report-print" class="nutrition-report-print">
+          <!-- Report Header -->
+          <div class="report-print-header">
+            <div class="report-print-brand">
+              <span class="brand-mark small-mark">N</span>
+              <div>
+                <h2>NutriPlan Lite</h2>
+                <small>Fitness & Nutrition Analytics Summary</small>
+              </div>
+            </div>
+            <div class="report-print-date-range">
+              <span class="report-badge">WEEKLY REPORT</span>
+              <strong id="report-date-range">May 19 - May 25, 2026</strong>
+            </div>
+          </div>
+
+          <hr class="report-divider">
+
+          <!-- 4 Stat Badges Row -->
+          <div class="report-print-stats-row">
+            <div class="print-stat-card">
+              <small>Calorie Intake</small>
+              <h3 id="report-stat-calories">0 kcal</h3>
+              <span id="report-meta-calories" class="print-meta-text">0% Adherence</span>
+            </div>
+            <div class="print-stat-card">
+              <small>Hydration Status</small>
+              <h3 id="report-stat-water">0 L</h3>
+              <span id="report-meta-water" class="print-meta-text">0 ml / day</span>
+            </div>
+            <div class="print-stat-card">
+              <small>Protein Average</small>
+              <h3 id="report-stat-protein">0 g</h3>
+              <span id="report-meta-protein" class="print-meta-text">0% of target</span>
+            </div>
+            <div class="print-stat-card">
+              <small>Consistency Index</small>
+              <h3 id="report-stat-consistency">0%</h3>
+              <span id="report-meta-streak" class="print-meta-text">0-day streak</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Charts Screen Captures or Mini SVGs -->
+          <div class="report-charts-snapshot">
+            <h4>Intake Performance Highlights</h4>
+            <div class="print-chart-box">
+              <h5>Calorie Log against goal</h5>
+              <div id="print-weekly-calories-bars" class="report-mini-bar-grid"></div>
+            </div>
+            <div class="print-chart-box">
+              <h5>Water Intake logs</h5>
+              <div id="print-weekly-water-bars" class="report-mini-bar-grid"></div>
+            </div>
+          </div>
+
+          <!-- Printable tabular summary of the 7-day logs -->
+          <div class="report-table-section">
+            <h4>7-Day Nutrition Averages</h4>
+            <table class="report-print-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th style="text-align:right;">Calories (kcal)</th>
+                  <th style="text-align:right;">Protein (g)</th>
+                  <th style="text-align:right;">Carbs (g)</th>
+                  <th style="text-align:right;">Fat (g)</th>
+                  <th style="text-align:right;">Water (ml)</th>
+                </tr>
+              </thead>
+              <tbody id="report-table-body">
+                <!-- Log rows filled dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Smart habit insights and AI suggestions -->
+          <div class="report-insights-section">
+            <h4>Smart Nutrition Insights & Recommendations</h4>
+            <div id="report-insights-list" class="report-insights-list">
+              <!-- Dynamically populated report advice -->
+            </div>
+          </div>
+
+          <div class="report-print-footer">
+            <p>NutriPlan Lite is 100% free, offline-first, and private by design. Your metrics remain secure on your device.</p>
+            <small>© 2026 NutriPlan Lite. Generated on <span id="report-generation-time">May 25, 2026</span>.</small>
+          </div>
+        </div>
+      </div>
     </aside>
   </div>
 

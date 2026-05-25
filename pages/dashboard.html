@@ -139,11 +139,14 @@
           <p class="eyebrow">Weekly Analytics</p>
           <h2>Nutrition Dashboard</h2>
         </div>
-        <!-- Chart Tabs -->
-        <div class="analytics-tabs" role="tablist" aria-label="Nutrition analytics charts">
-          <button class="tab-btn active" data-chart-tab="calorie" type="button" role="tab" aria-selected="true">Calorie Trends</button>
-          <button class="tab-btn" data-chart-tab="macro" type="button" role="tab" aria-selected="false">Macro Ratios</button>
-          <button class="tab-btn" data-chart-tab="water" type="button" role="tab" aria-selected="false">Hydration Log</button>
+        <div class="analytics-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <!-- Chart Tabs -->
+          <div class="analytics-tabs" role="tablist" aria-label="Nutrition analytics charts">
+            <button class="tab-btn active" data-chart-tab="calorie" type="button" role="tab" aria-selected="true">Calorie Trends</button>
+            <button class="tab-btn" data-chart-tab="macro" type="button" role="tab" aria-selected="false">Macro Ratios</button>
+            <button class="tab-btn" data-chart-tab="water" type="button" role="tab" aria-selected="false">Hydration Log</button>
+          </div>
+          <button id="btn-generate-report" class="secondary-button" type="button" style="gap:0.4rem; min-height:36px; font-size:0.8rem; border-radius:99px; font-weight:800; padding:0 0.85rem;" title="Generate Weekly PDF Report">📄 Report</button>
         </div>
       </div>
 

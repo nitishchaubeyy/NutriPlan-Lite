@@ -63,6 +63,7 @@ window.App = (() => {
     Hydration.init();
     AI.init();
     Dashboard.initProfilePanel();
+    if (window.WeeklyReport) window.WeeklyReport.init();
 
     // Initial UI render
     refresh();
@@ -113,6 +114,7 @@ window.addEventListener('pageLoaded', async (e) => {
     await Tracker.init();
     Hydration.init();
     Dashboard.initProfilePanel();
+    if (window.WeeklyReport) window.WeeklyReport.init();
 
     if (!window.Storage.getProfile().isSetup) {
       const modal = document.getElementById('onboarding-modal');
