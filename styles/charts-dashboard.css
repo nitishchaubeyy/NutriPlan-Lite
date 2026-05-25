@@ -550,3 +550,414 @@ body.light-mode .chart-display-container {
   }
 }
 
+/* ================================================================
+   Interactive Onboarding Setup Wizard & Spotlight Tour Styling
+   ================================================================ */
+
+/* Setup Wizard Enhancements */
+.onboarding-wizard-card {
+  width: min(520px, 100%) !important;
+  padding: 1.5rem 1.75rem !important;
+  border-left: 1px solid var(--line) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+  background: rgba(10, 15, 30, 0.96) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+
+.onboarding-wizard-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.onboarding-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #5eead4);
+  border-radius: 0 4px 4px 0;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(56, 242, 166, 0.5);
+}
+
+.onboarding-step-panel {
+  display: none;
+}
+
+.onboarding-step-panel.active {
+  display: block;
+  opacity: 0;
+  animation: wizardStepFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes wizardStepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-instruction {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 1.25rem 0;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Welcome Screen Styling */
+.welcome-wizard-content {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.welcome-tagline {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.5;
+  font-weight: 500;
+  margin: 0;
+}
+
+.welcome-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.welcome-feature-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  transition: background 0.2s ease;
+}
+
+.welcome-feature-item:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.welcome-feature-item .feature-emoji {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.welcome-feature-item h4 {
+  margin: 0 0 0.15rem 0;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.welcome-feature-item p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted-2);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Onboarding Wizard Footer Step Dots */
+.onboarding-step-dots {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.onboarding-step-dots .step-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.25s ease;
+}
+
+.onboarding-step-dots .step-dot.active {
+  background: var(--green);
+  width: 18px;
+  box-shadow: 0 0 8px rgba(56, 242, 166, 0.4);
+}
+
+/* Spotlight Tour Overlay Backdrop */
+.tour-spotlight-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  background-color: rgba(4, 6, 12, 0.72);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  pointer-events: auto;
+  transition: clip-path 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: clip-path;
+}
+
+body.tour-active {
+  overflow: hidden !important;
+}
+
+/* Floating Tour Tooltip Card Container */
+.tour-tooltip-container {
+  position: absolute;
+  z-index: 10001;
+  pointer-events: auto;
+  will-change: left, top;
+}
+
+.tour-tooltip-card {
+  width: min(340px, 90vw);
+  background: rgba(11, 16, 29, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 
+              0 0 30px rgba(56, 242, 166, 0.06);
+  box-sizing: border-box;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tour-tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tour-tooltip-header h4 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 850;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.tour-close-btn {
+  background: transparent;
+  color: var(--muted-2);
+  border: 0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.tour-close-btn:hover {
+  color: var(--text);
+}
+
+.tour-tooltip-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Tooltip Progress Indicator */
+.tour-tooltip-progress-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.25rem 0;
+}
+
+.tour-tooltip-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.tour-tooltip-progress-bar div {
+  height: 100%;
+  background: var(--green);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+#tour-step-counter {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Tooltip Footer Buttons */
+.tour-tooltip-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.tour-nav-btns {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.compact-btn {
+  min-height: 32px !important;
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+  padding: 0 0.75rem !important;
+}
+
+/* Tooltip Directional Arrows */
+.tour-tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 10002;
+}
+
+/* Arrow points down to target (tooltip is above element) */
+.tour-tooltip-arrow.arrow-bottom {
+  border-width: 8px 8px 0 8px;
+  border-color: rgba(11, 16, 29, 0.94) transparent transparent transparent;
+  bottom: -8px;
+}
+
+/* Arrow points up to target (tooltip is below element) */
+.tour-tooltip-arrow.arrow-top {
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent rgba(11, 16, 29, 0.94) transparent;
+  top: -8px;
+}
+
+/* Arrow points right to target (tooltip is left of element) */
+.tour-tooltip-arrow.arrow-right {
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent rgba(11, 16, 29, 0.94);
+  right: -8px;
+}
+
+/* Arrow points left to target (tooltip is right of element) */
+.tour-tooltip-arrow.arrow-left {
+  border-width: 8px 8px 8px 0;
+  border-color: transparent rgba(11, 16, 29, 0.94) transparent transparent;
+  left: -8px;
+}
+
+/* Replay button styling overrides */
+#btn-replay-tour {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  width: 36px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#btn-replay-tour:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--green);
+  color: var(--text);
+  box-shadow: 0 0 10px rgba(56, 242, 166, 0.15);
+}
+
+.mobile-nav-tour-link {
+  font-weight: 800 !important;
+  color: var(--green) !important;
+}
+
+/* Light Mode Styling Overrides */
+body.light-mode .onboarding-wizard-card {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-left-color: #cbd5e1 !important;
+}
+
+body.light-mode .welcome-feature-item {
+  background: rgba(0, 0, 0, 0.015);
+  border-color: rgba(0, 0, 0, 0.035);
+}
+
+body.light-mode .welcome-feature-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .onboarding-step-dots .step-dot {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .onboarding-step-dots .step-dot.active {
+  background: var(--green);
+}
+
+body.light-mode .tour-tooltip-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12), 
+              0 0 30px rgba(56, 242, 166, 0.08);
+}
+
+body.light-mode .tour-tooltip-progress-bar {
+  background: #e2e8f0;
+}
+
+body.light-mode .tour-tooltip-arrow.arrow-bottom {
+  border-top-color: #ffffff;
+}
+
+body.light-mode .tour-tooltip-arrow.arrow-top {
+  border-bottom-color: #ffffff;
+}
+
+body.light-mode .tour-tooltip-arrow.arrow-right {
+  border-left-color: #ffffff;
+}
+
+body.light-mode .tour-tooltip-arrow.arrow-left {
+  border-right-color: #ffffff;
+}
+
+body.light-mode #btn-replay-tour {
+  background: rgba(0, 0, 0, 0.01);
+  color: #64748b;
+}
+
+body.light-mode #btn-replay-tour:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+

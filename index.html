@@ -38,6 +38,7 @@
   <script src="scripts/auth.js" defer></script>
   <script src="scripts/analytics.js" defer></script>
   <script src="scripts/reports.js" defer></script>
+  <script src="scripts/onboarding.js" defer></script>
   <script src="scripts/tracker.js" defer></script>
   <script src="scripts/hydration.js" defer></script>
   <script src="scripts/dashboard.js" defer></script>
@@ -103,6 +104,7 @@
 
       <div class="header-actions">
         <div id="auth-status-container" class="auth-status-container"></div>
+        <button id="btn-replay-tour" class="icon-button" type="button" aria-label="Onboarding Tour" title="Start interactive tour">❓</button>
         <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle theme" title="Toggle theme">☀️</button>
       </div>
     </header>
@@ -191,48 +193,122 @@
   <!-- ── Onboarding Modal ─────────────────────────────────────── -->
   <div id="onboarding-modal" class="drawer hidden" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
     <div class="drawer-backdrop" aria-hidden="true"></div>
-    <aside class="drawer-card">
+    <aside class="drawer-card onboarding-wizard-card">
+      <!-- Onboarding Wizard Header Progress -->
+      <div class="onboarding-wizard-progress-bar">
+        <div id="onboarding-progress-fill" class="onboarding-progress-fill" style="width: 20%;"></div>
+      </div>
+      
       <div class="drawer-header">
         <div>
-          <p class="eyebrow">Welcome to NutriPlan Lite</p>
-          <h2 id="onboarding-title">Set up your profile</h2>
+          <p class="eyebrow" id="onboarding-eyebrow">Step 1 of 5 • Welcome</p>
+          <h2 id="onboarding-title">Welcome to NutriPlan</h2>
         </div>
       </div>
 
       <div class="profile-form">
-        <div class="form-row-2">
-          <label>
-            <span>Age</span>
-            <input id="age" type="number" min="1" max="120" value="25" placeholder="25">
-          </label>
-          <label>
-            <span>Weight (kg)</span>
-            <input id="weight" type="number" min="20" max="300" step="0.1" value="70" placeholder="70">
-          </label>
+        <!-- STEP 1: Welcome Screen -->
+        <div id="onboarding-step-1" class="onboarding-step-panel active">
+          <div class="welcome-wizard-content">
+            <p class="welcome-tagline">Your personal, 100% private, local-first fitness and nutrition companion.</p>
+            <div class="welcome-features-list">
+              <div class="welcome-feature-item">
+                <span class="feature-emoji">🛡️</span>
+                <div>
+                  <h4>100% Client-Side Privacy</h4>
+                  <p>All logs and physical metrics remain securely on your device. We never sell or upload your personal information.</p>
+                </div>
+              </div>
+              <div class="welcome-feature-item">
+                <span class="feature-emoji">📊</span>
+                <div>
+                  <h4>Goal-Aware Analytics</h4>
+                  <p>Track calories, protein ratios, and hydration in real-time. Instantly generate downloadable PDF Weekly Reports.</p>
+                </div>
+              </div>
+              <div class="welcome-feature-item">
+                <span class="feature-emoji">🤖</span>
+                <div>
+                  <h4>AI Wellness Coach</h4>
+                  <p>Receive tailored food advice and habit coaching context-aware recipes on demand.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-row-2">
-          <label>
-            <span>Height (cm)</span>
-            <input id="height" type="number" min="50" max="280" value="175" placeholder="175">
-          </label>
-          <label>
-            <span>Gender</span>
-            <select id="gender">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </label>
+
+        <!-- STEP 2: Physical Metrics -->
+        <div id="onboarding-step-2" class="onboarding-step-panel hidden">
+          <p class="step-instruction">Enter your core metrics so we can calculate your baseline metabolic rates.</p>
+          <div class="form-row-2">
+            <label>
+              <span>Age</span>
+              <input id="age" type="number" min="1" max="120" value="25" placeholder="25" required>
+            </label>
+            <label>
+              <span>Weight (kg)</span>
+              <input id="weight" type="number" min="20" max="300" step="0.1" value="70" placeholder="70" required>
+            </label>
+          </div>
+          <div class="form-row-2">
+            <label>
+              <span>Height (cm)</span>
+              <input id="height" type="number" min="50" max="280" value="175" placeholder="175" required>
+            </label>
+            <label>
+              <span>Gender</span>
+              <select id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </label>
+          </div>
         </div>
+
+        <!-- STEP 3: Goals & Activity -->
+        <div id="onboarding-step-3" class="onboarding-step-panel hidden">
+          <p class="step-instruction">Define your destination and physical activity thresholds.</p>
           <label>
             <span>Activity level</span>
             <select id="activity">
-            <option value="1.2">Sedentary (desk job)</option>
-            <option value="1.375">Light (1-3 days/week)</option>
-            <option value="1.55" selected>Moderate (3-5 days)</option>
-            <option value="1.725">Active (6-7 days)</option>
-            <option value="1.9">Very active (athlete)</option>
+              <option value="1.2">Sedentary (desk job)</option>
+              <option value="1.375">Light (1-3 days/week)</option>
+              <option value="1.55" selected>Moderate (3-5 days)</option>
+              <option value="1.725">Active (6-7 days)</option>
+              <option value="1.9">Very active (athlete)</option>
             </select>
           </label>
+          <div class="form-row-2">
+            <label>
+              <span>Goal</span>
+              <select id="goal">
+                <option value="lose">Lose weight</option>
+                <option value="maintain" selected>Maintain</option>
+                <option value="gain">Gain muscle</option>
+              </select>
+            </label>
+            <label>
+              <span>Macro split</span>
+              <select id="macroSplit">
+                <option value="balanced" selected>Balanced</option>
+                <option value="highprotein">High protein</option>
+                <option value="lowcarb">Low carb</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+          </div>
+          <div id="custom-macros-panel" class="hidden custom-macros">
+            <div class="form-row-3">
+              <label><span>Protein %</span><input id="customProtein" type="number" min="0" max="100" value="25"></label>
+              <label><span>Carbs %</span><input id="customCarbs" type="number" min="0" max="100" value="45"></label>
+              <label><span>Fat %</span><input id="customFat" type="number" min="0" max="100" value="30"></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Preferences & Hydration -->
+        <div id="onboarding-step-4" class="onboarding-step-panel hidden">
+          <p class="step-instruction">Customize dietary guidelines and water hydration parameters.</p>
           <label data-context-key="dietaryPreference">
             <span>Diet preference</span>
             <select id="dietaryPreference">
@@ -247,49 +323,42 @@
             <span>Allergies or restrictions</span>
             <input id="allergies" type="text" placeholder="e.g. lactose, peanuts, none">
           </label>
-        <div class="form-row-2">
           <label>
-            <span>Goal</span>
-            <select id="goal">
-              <option value="lose">Lose weight</option>
-              <option value="maintain" selected>Maintain</option>
-              <option value="gain">Gain muscle</option>
-            </select>
-          </label>
-          <label>
-            <span>Macro split</span>
-            <select id="macroSplit">
-              <option value="balanced" selected>Balanced</option>
-              <option value="highprotein">High protein</option>
-              <option value="lowcarb">Low carb</option>
-              <option value="custom">Custom</option>
-            </select>
+            <span>Water target (ml)</span>
+            <input id="waterTarget" type="number" min="500" max="10000" step="100" value="2500" required>
           </label>
         </div>
-        <div id="custom-macros-panel" class="hidden custom-macros">
-          <div class="form-row-3">
-            <label><span>Protein %</span><input id="customProtein" type="number" min="0" max="100" value="25"></label>
-            <label><span>Carbs %</span><input id="customCarbs" type="number" min="0" max="100" value="45"></label>
-            <label><span>Fat %</span><input id="customFat" type="number" min="0" max="100" value="30"></label>
-          </div>
+
+        <!-- STEP 5: Memact Context -->
+        <div id="onboarding-step-5" class="onboarding-step-panel hidden">
+          <p class="step-instruction">Connect your external fitness context to automatically fill targets.</p>
+          <section class="memact-onboarding-panel">
+            <div>
+              <p class="eyebrow">Optional Memact</p>
+              <h3>Use your fitness context</h3>
+              <p>Connect Memact to reuse approved fitness preferences. If there is enough context, NutriPlan skips setup questions it already knows.</p>
+            </div>
+            <div class="memact-actions">
+              <button id="memact-connect-btn" class="secondary-button full-width" type="button">Connect Memact</button>
+              <button id="memact-skip-btn" class="text-button" type="button">Set up manually</button>
+            </div>
+            <p id="memact-status" class="memact-status" role="status" aria-live="polite" aria-atomic="true">Private by default. API keys stay on the server.</p>
+          </section>
         </div>
-        <label>
-          <span>Water target (ml)</span>
-          <input id="waterTarget" type="number" min="500" max="10000" step="100" value="2500">
-        </label>
-        <section class="memact-onboarding-panel">
-          <div>
-            <p class="eyebrow">Optional Memact</p>
-            <h3>Use your fitness context</h3>
-            <p>Connect Memact to reuse approved fitness preferences. If there is enough context, NutriPlan skips setup questions it already knows.</p>
+
+        <!-- Wizard Navigation Footer -->
+        <div class="onboarding-wizard-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:2rem; gap:1.25rem;">
+          <button id="btn-onboarding-back" class="secondary-button hidden" type="button" style="min-height:36px; padding:0 0.9rem;">← Back</button>
+          <div class="onboarding-step-dots" style="display:flex; gap:0.45rem;">
+            <span class="step-dot active"></span>
+            <span class="step-dot"></span>
+            <span class="step-dot"></span>
+            <span class="step-dot"></span>
+            <span class="step-dot"></span>
           </div>
-          <div class="memact-actions">
-            <button id="memact-connect-btn" class="secondary-button full-width" type="button">Connect Memact</button>
-            <button id="memact-skip-btn" class="text-button" type="button">Set up manually</button>
-          </div>
-          <p id="memact-status" class="memact-status" role="status" aria-live="polite" aria-atomic="true">Private by default. API keys stay on the server.</p>
-        </section>
-        <button id="save-profile-btn" class="primary-button full-width" type="button">Complete Setup</button>
+          <button id="btn-onboarding-next" class="primary-button" type="button" style="min-height:36px; padding:0 0.9rem;">Next →</button>
+          <button id="save-profile-btn" class="primary-button hidden" type="button" style="min-height:36px; padding:0 0.9rem;">Complete Setup ✓</button>
+        </div>
       </div>
     </aside>
   </div>
@@ -809,6 +878,7 @@
         <a href="#features">Features</a>
         <a href="#dashboard" data-nav="dashboard">Dashboard</a>
         <a href="#ai-helper" data-nav="ai-helper">Coach</a>
+        <a href="#" id="mobile-btn-replay-tour" class="mobile-nav-tour-link">❓ Start Onboarding Tour</a>
         <hr class="mobile-nav-divider">
         <div id="mobile-menu-auth-status" class="mobile-menu-auth-status"></div>
       </nav>
@@ -956,6 +1026,33 @@
         <button id="auth-submit-btn" class="primary-button full-width" type="submit">Sign In</button>
       </form>
     </aside>
+  </div>
+
+  <!-- ── Interactive Onboarding Spotlight & Tooltip Tour Overlay ── -->
+  <div id="tour-spotlight-overlay" class="tour-spotlight-overlay hidden"></div>
+  <div id="tour-tooltip-container" class="tour-tooltip-container hidden" role="dialog" aria-live="polite">
+    <div class="tour-tooltip-arrow"></div>
+    <div class="tour-tooltip-card">
+      <div class="tour-tooltip-header">
+        <h4 id="tour-step-title">Step Title</h4>
+        <button id="btn-tour-close" class="tour-close-btn" type="button" aria-label="Close walkthrough">×</button>
+      </div>
+      <p id="tour-step-desc">Step description details...</p>
+      <div class="tour-tooltip-progress-wrap">
+        <div class="tour-tooltip-progress-bar">
+          <div id="tour-progress-fill" style="width: 16.6%;"></div>
+        </div>
+        <span id="tour-step-counter">1 of 6</span>
+      </div>
+      <div class="tour-tooltip-footer">
+        <button id="btn-tour-skip" class="text-button" type="button">Skip Tour</button>
+        <div class="tour-nav-btns">
+          <button id="btn-tour-back" class="secondary-button compact-btn hidden" type="button">← Back</button>
+          <button id="btn-tour-next" class="primary-button compact-btn" type="button">Next →</button>
+          <button id="btn-tour-finish" class="primary-button compact-btn hidden" type="button">Finish ✓</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </body>
