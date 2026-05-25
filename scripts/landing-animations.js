@@ -113,6 +113,8 @@ window.addEventListener('pageLoaded', (e) => {
   if (e.detail.page === 'landing') {
     // Slight delay to ensure DOM is fully painted
     setTimeout(() => {
+      if (window.__landingAnimationsInitialized) return;
+      window.__landingAnimationsInitialized = true;
       window.LandingAnimations.init();
     }, 50);
   }
@@ -125,6 +127,8 @@ window.addEventListener('pageLoaded', (e) => {
     // If there is no hash or hash is landing, run initial animations
     if (!hash || hash === 'landing') {
       setTimeout(() => {
+        if (window.__landingAnimationsInitialized) return;
+        window.__landingAnimationsInitialized = true;
         window.LandingAnimations.init();
       }, 100);
     }

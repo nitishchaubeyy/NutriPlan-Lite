@@ -16,9 +16,9 @@ window.Auth = (() => {
 
   // ── Public helpers (re-exported from Session) ──────────────────
 
-  function getToken()         { return window.Session ? window.Session.getToken()         : localStorage.getItem('nutriplan_token'); }
-  function isAuthenticated()  { return window.Session ? window.Session.isAuthenticated()  : !!getToken(); }
-  function getCurrentUser()   { return { email: window.Session ? window.Session.getEmail() : localStorage.getItem('nutriplan_user_email') }; }
+  function getToken() { return window.Session ? window.Session.getToken() : localStorage.getItem('nutriplan_token'); }
+  function isAuthenticated() { return window.Session ? window.Session.isAuthenticated() : !!getToken(); }
+  function getCurrentUser() { return { email: window.Session ? window.Session.getEmail() : localStorage.getItem('nutriplan_user_email') }; }
 
   // ── Modal control ───────────────────────────────────────────────
 
@@ -35,18 +35,18 @@ window.Auth = (() => {
 
   function switchTab(tab) {
     activeTab = tab;
-    const loginBtn    = document.getElementById('auth-tab-login');
+    const loginBtn = document.getElementById('auth-tab-login');
     const registerBtn = document.getElementById('auth-tab-register');
-    const submitBtn   = document.getElementById('auth-submit-btn');
+    const submitBtn = document.getElementById('auth-submit-btn');
 
     if (!loginBtn || !registerBtn || !submitBtn) return;
 
     if (tab === 'login') {
-      loginBtn.classList.add('active');    loginBtn.setAttribute('aria-selected', 'true');
+      loginBtn.classList.add('active'); loginBtn.setAttribute('aria-selected', 'true');
       registerBtn.classList.remove('active'); registerBtn.setAttribute('aria-selected', 'false');
       submitBtn.textContent = 'Sign In';
     } else {
-      registerBtn.classList.add('active');    registerBtn.setAttribute('aria-selected', 'true');
+      registerBtn.classList.add('active'); registerBtn.setAttribute('aria-selected', 'true');
       loginBtn.classList.remove('active'); loginBtn.setAttribute('aria-selected', 'false');
       submitBtn.textContent = 'Register';
     }
@@ -161,20 +161,20 @@ window.Auth = (() => {
 
   function init() {
     const closeBackdrop = document.getElementById('close-auth-backdrop');
-    const closeX        = document.getElementById('close-auth-x');
-    const loginBtn      = document.getElementById('auth-tab-login');
-    const registerBtn   = document.getElementById('auth-tab-register');
-    const form          = document.getElementById('auth-form');
+    const closeX = document.getElementById('close-auth-x');
+    const loginBtn = document.getElementById('auth-tab-login');
+    const registerBtn = document.getElementById('auth-tab-register');
+    const form = document.getElementById('auth-form');
 
     if (closeBackdrop) closeBackdrop.addEventListener('click', closeModal);
-    if (closeX)        closeX.addEventListener('click', closeModal);
-    if (loginBtn)      loginBtn.addEventListener('click', () => switchTab('login'));
-    if (registerBtn)   registerBtn.addEventListener('click', () => switchTab('register'));
+    if (closeX) closeX.addEventListener('click', closeModal);
+    if (loginBtn) loginBtn.addEventListener('click', () => switchTab('login'));
+    if (registerBtn) registerBtn.addEventListener('click', () => switchTab('register'));
 
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email    = document.getElementById('auth-email')?.value.trim();
+        const email = document.getElementById('auth-email')?.value.trim();
         const password = document.getElementById('auth-password')?.value.trim();
         if (activeTab === 'login') {
           await login(email, password);

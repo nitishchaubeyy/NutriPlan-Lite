@@ -71,23 +71,36 @@ window.Navigation = {
     const user = window.Auth.getCurrentUser();
     const email = user ? user.email : null;
 
+    container.innerHTML = ''; // Safely clear content
+
     if (token && email) {
-      container.innerHTML = `
-        <span class="auth-user-email mobile-user-email" title="${email}">${email}</span>
-        <button id="mobile-auth-signout-btn" class="secondary-button mobile-signout-btn" type="button">Sign Out</button>
-      `;
-      container.querySelector('#mobile-auth-signout-btn')
-        ?.addEventListener('click', () => {
-          window.Auth.logout();
-        });
+      const span = document.createElement('span');
+      span.className = 'auth-user-email mobile-user-email';
+      span.title = email;
+      span.textContent = email;
+
+      const btn = document.createElement('button');
+      btn.id = 'mobile-auth-signout-btn';
+      btn.className = 'secondary-button mobile-signout-btn';
+      btn.type = 'button';
+      btn.textContent = 'Sign Out';
+      btn.addEventListener('click', () => {
+        window.Auth.logout();
+      });
+
+      container.appendChild(span);
+      container.appendChild(btn);
     } else {
-      container.innerHTML = `
-        <button id="mobile-auth-signin-trigger" class="primary-button mobile-signin-btn" type="button">Sign In</button>
-      `;
-      container.querySelector('#mobile-auth-signin-trigger')
-        ?.addEventListener('click', () => {
-          window.Auth.openModal();
-        });
+      const btn = document.createElement('button');
+      btn.id = 'mobile-auth-signin-trigger';
+      btn.className = 'primary-button mobile-signin-btn';
+      btn.type = 'button';
+      btn.textContent = 'Sign In';
+      btn.addEventListener('click', () => {
+        window.Auth.openModal();
+      });
+
+      container.appendChild(btn);
     }
   },
 
@@ -138,6 +151,9 @@ window.Navigation = {
 
   updateActiveNavLinks(hash) {
     document.body.className = `page-${hash}`;
+    if (hash !== 'landing') {
+      window.__landingAnimationsInitialized = false;
+    }
     const navLinks = document.querySelectorAll('a[data-nav]');
     navLinks.forEach(link => {
       if (link.getAttribute('data-nav') === hash) {
