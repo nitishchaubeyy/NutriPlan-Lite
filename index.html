@@ -360,19 +360,77 @@
     
       <!-- CTA Section -->
       <section class="landing-cta container">
-        <div class="glass-panel cta-panel text-center">
-          <h2>Ready to transform your habits?</h2>
-          <p>All your data is stored locally. No sign-up required.</p>
-          <a href="#dashboard" class="primary-button cta-button large">Start Tracking Now</a>
+        <div class="glass-panel cta-panel">
+          <div class="cta-content-grid">
+            <div class="cta-left">
+              <h2>Ready to <span class="text-gradient">transform your habits?</span></h2>
+              <p>Take control of your health today. NutriPlan Lite is 100% free, local-first, and private by design.</p>
+              <div class="cta-btn-wrapper">
+                <a href="#dashboard" class="primary-button cta-button large" data-nav="dashboard">Start Tracking Now <span class="btn-arrow">→</span></a>
+              </div>
+            </div>
+            <div class="cta-right">
+              <div class="cta-feature-badges">
+                <div class="cta-badge-item">
+                  <span class="cta-badge-icon">🛡️</span>
+                  <div>
+                    <h4>100% Private</h4>
+                    <p>All data stays securely on your device.</p>
+                  </div>
+                </div>
+                <div class="cta-badge-item">
+                  <span class="cta-badge-icon">⚡</span>
+                  <div>
+                    <h4>Instant Access</h4>
+                    <p>No sign-up or accounts required to start.</p>
+                  </div>
+                </div>
+                <div class="cta-badge-item">
+                  <span class="cta-badge-icon">💬</span>
+                  <div>
+                    <h4>AI Coached</h4>
+                    <p>Smart feedback whenever you need advice.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     
       <!-- Footer -->
       <footer class="landing-footer container">
-        <div class="footer-content text-center">
-          <span class="brand-mark">N</span>
-          <strong>NutriPlan Lite</strong>
-          <p class="muted">© 2026 NutriPlan. All rights reserved.</p>
+        <div class="footer-grid">
+          <div class="footer-col-brand">
+            <a class="footer-brand" href="#landing">
+              <span class="brand-mark small-mark">N</span>
+              <strong>NutriPlan Lite</strong>
+            </a>
+            <p class="footer-tagline">Your local-first fitness and nutrition companion. Plan, track, and sustain healthy habits without compromising your privacy.</p>
+          </div>
+          <div class="footer-col-links">
+            <div class="footer-nav-col">
+              <h4>Product</h4>
+              <a href="#landing" data-nav="landing">Home</a>
+              <a href="#features">Features</a>
+              <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+              <a href="#ai-helper" data-nav="ai-helper">Coach</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>Resources</h4>
+              <a href="#" onclick="alert('Privacy Policy: All data is stored locally in your browser/device localStorage and is never transmitted to our servers.')">Privacy Policy</a>
+              <a href="https://github.com" target="_blank" rel="noopener">Github</a>
+              <a href="#" onclick="alert('NutriPlan Lite is a local-first web app. No account setup or billing needed.')">FAQ Support</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="muted">© 2026 NutriPlan Lite. All rights reserved. Built for a healthier tomorrow.</p>
+          <div class="footer-bottom-links">
+            <span>Local-First</span>
+            <span>•</span>
+            <span>Open Source</span>
+          </div>
         </div>
       </footer>
     </div>

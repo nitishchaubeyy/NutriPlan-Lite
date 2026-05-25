@@ -344,57 +344,293 @@ body:not(.page-landing) #landing-header {
   box-shadow: 0 20px 40px rgba(251, 191, 36, 0.12), var(--shadow);
 }
 
-/* ── CTA Section ── */
+/* ── CTA Section Redesign ── */
 .landing-cta {
-  padding: 3rem 0;
+  padding: 4rem 0 2rem;
 }
 
 .cta-panel {
-  padding: 4.5rem 2rem;
+  padding: 4rem;
   border-radius: 32px;
-  background: linear-gradient(180deg, rgba(56, 242, 166, 0.05), transparent);
-  border: 1px solid rgba(56, 242, 166, 0.12);
+  background: radial-gradient(circle at top left, rgba(56, 242, 166, 0.08), transparent 30rem),
+              linear-gradient(135deg, rgba(13, 22, 37, 0.85) 0%, rgba(6, 10, 18, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
 }
 
-.cta-panel h2 {
-  font-size: clamp(2rem, 3.5vw, 2.75rem);
-  margin-bottom: 0.8rem;
-  letter-spacing: -0.03em;
+.cta-panel::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(56, 242, 166, 0.06), transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
 }
 
-.cta-panel p {
+.cta-content-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-left {
+  text-align: left;
+}
+
+.cta-left h2 {
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  letter-spacing: -0.04em;
+  font-weight: 900;
+}
+
+.cta-left p {
   color: var(--muted);
-  margin-bottom: 2rem;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2.2rem;
+  max-width: 520px;
+}
+
+.cta-btn-wrapper {
+  display: flex;
 }
 
 .cta-panel .cta-button.large {
-  padding: 1rem 2.2rem;
-  font-size: 1.15rem;
+  padding: 1.05rem 2.2rem;
+  font-size: 1.1rem;
   box-shadow: 0 16px 36px rgba(56, 242, 166, 0.28);
+  border-radius: 99px;
+  font-weight: 850;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s var(--ease);
 }
 
 .cta-panel .cta-button.large:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 42px rgba(56, 242, 166, 0.42);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 45px rgba(56, 242, 166, 0.42);
 }
 
-/* ── Footer ── */
+.btn-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.2s var(--ease);
+}
+
+.cta-panel .cta-button.large:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.cta-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cta-feature-badges {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.cta-badge-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s var(--ease);
+  text-align: left;
+}
+
+.cta-badge-item:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateX(-4px);
+}
+
+.cta-badge-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cta-badge-item h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.cta-badge-item p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── Footer Redesign ── */
 .landing-footer {
-  padding: 2rem 0 3rem;
+  padding: 4rem 0 3rem;
   border-top: 1px solid var(--line);
-  margin-top: 3.5rem;
+  margin-top: 5rem;
 }
 
-.footer-content strong {
-  display: block;
-  margin: 0.5rem 0;
-  font-size: 1.1rem;
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding-bottom: 3.5rem;
 }
 
-.footer-content .brand-mark {
-  margin: 0 auto;
+.footer-col-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.footer-tagline {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 360px;
+  margin: 0;
+}
+
+.footer-col-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  text-align: left;
+}
+
+.footer-nav-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-nav-col h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+}
+
+.footer-nav-col a {
+  font-size: 0.92rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.footer-nav-col a:hover {
+  color: var(--green);
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--muted-2);
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.84rem;
+  color: var(--muted-2);
+  font-weight: 600;
+}
+
+/* Responsiveness adjustments for bottom section */
+@media (max-width: 900px) {
+  .cta-content-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .cta-left {
+    text-align: center;
+  }
+  .cta-left p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-btn-wrapper {
+    justify-content: center;
+  }
+  .cta-right {
+    justify-content: center;
+  }
+  .cta-feature-badges {
+    max-width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  .cta-badge-item {
+    transform: none !important;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .footer-col-brand {
+    align-items: center;
+    text-align: center;
+  }
+  .footer-tagline {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cta-panel {
+    padding: 2.5rem 1.5rem;
+    border-radius: 24px;
+  }
+  .footer-col-links {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 /* ── Mobile Menu Drawer Custom Styles ── */
