@@ -113,7 +113,30 @@ window.addEventListener('pageLoaded', (e) => {
   if (e.detail.page === 'landing') {
     // Slight delay to ensure DOM is fully painted
     setTimeout(() => {
+      if (window.__landingAnimationsInitialized) return;
+      window.__landingAnimationsInitialized = true;
       window.LandingAnimations.init();
     }, 50);
   }
 });
+
+// Self-initialization check to fix race condition when page is loaded deferred
+(() => {
+  const checkAndInit = () => {
+    const hash = window.location.hash.replace('#', '');
+    // If there is no hash or hash is landing, run initial animations
+    if (!hash || hash === 'landing') {
+      setTimeout(() => {
+        if (window.__landingAnimationsInitialized) return;
+        window.__landingAnimationsInitialized = true;
+        window.LandingAnimations.init();
+      }, 100);
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndInit);
+  } else {
+    checkAndInit();
+  }
+})();

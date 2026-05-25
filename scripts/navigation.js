@@ -25,6 +25,83 @@ window.Navigation = {
 
     // Determine initial route
     await this.handleRoute();
+
+    // Setup mobile menu drawer
+    this.setupMobileMenu();
+  },
+
+  setupMobileMenu() {
+    const drawer = document.getElementById('mobile-menu-drawer');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const closeBtn = document.getElementById('close-mobile-menu-x');
+    const closeBackdrop = document.getElementById('close-mobile-menu-backdrop');
+
+    if (!drawer || !menuBtn) return;
+
+    const openMenu = () => {
+      drawer.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      // Sync auth status inside the mobile menu
+      this.renderMobileAuth();
+    };
+
+    const closeMenu = () => {
+      drawer.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+
+    menuBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (closeBackdrop) closeBackdrop.addEventListener('click', closeMenu);
+
+    // Also close menu when any link is clicked
+    drawer.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link) {
+        closeMenu();
+      }
+    });
+  },
+
+  renderMobileAuth() {
+    const container = document.getElementById('mobile-menu-auth-status');
+    if (!container || !window.Auth) return;
+
+    const token = window.Auth.getToken();
+    const user = window.Auth.getCurrentUser();
+    const email = user ? user.email : null;
+
+    container.innerHTML = ''; // Safely clear content
+
+    if (token && email) {
+      const span = document.createElement('span');
+      span.className = 'auth-user-email mobile-user-email';
+      span.title = email;
+      span.textContent = email;
+
+      const btn = document.createElement('button');
+      btn.id = 'mobile-auth-signout-btn';
+      btn.className = 'secondary-button mobile-signout-btn';
+      btn.type = 'button';
+      btn.textContent = 'Sign Out';
+      btn.addEventListener('click', () => {
+        window.Auth.logout();
+      });
+
+      container.appendChild(span);
+      container.appendChild(btn);
+    } else {
+      const btn = document.createElement('button');
+      btn.id = 'mobile-auth-signin-trigger';
+      btn.className = 'primary-button mobile-signin-btn';
+      btn.type = 'button';
+      btn.textContent = 'Sign In';
+      btn.addEventListener('click', () => {
+        window.Auth.openModal();
+      });
+
+      container.appendChild(btn);
+    }
   },
 
   async handleRoute() {
@@ -74,6 +151,9 @@ window.Navigation = {
 
   updateActiveNavLinks(hash) {
     document.body.className = `page-${hash}`;
+    if (hash !== 'landing') {
+      window.__landingAnimationsInitialized = false;
+    }
     const navLinks = document.querySelectorAll('a[data-nav]');
     navLinks.forEach(link => {
       if (link.getAttribute('data-nav') === hash) {
