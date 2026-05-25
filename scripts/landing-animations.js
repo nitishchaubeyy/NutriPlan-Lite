@@ -117,3 +117,22 @@ window.addEventListener('pageLoaded', (e) => {
     }, 50);
   }
 });
+
+// Self-initialization check to fix race condition when page is loaded deferred
+(() => {
+  const checkAndInit = () => {
+    const hash = window.location.hash.replace('#', '');
+    // If there is no hash or hash is landing, run initial animations
+    if (!hash || hash === 'landing') {
+      setTimeout(() => {
+        window.LandingAnimations.init();
+      }, 100);
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndInit);
+  } else {
+    checkAndInit();
+  }
+})();

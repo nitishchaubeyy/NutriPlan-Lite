@@ -25,6 +25,70 @@ window.Navigation = {
 
     // Determine initial route
     await this.handleRoute();
+
+    // Setup mobile menu drawer
+    this.setupMobileMenu();
+  },
+
+  setupMobileMenu() {
+    const drawer = document.getElementById('mobile-menu-drawer');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const closeBtn = document.getElementById('close-mobile-menu-x');
+    const closeBackdrop = document.getElementById('close-mobile-menu-backdrop');
+
+    if (!drawer || !menuBtn) return;
+
+    const openMenu = () => {
+      drawer.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      // Sync auth status inside the mobile menu
+      this.renderMobileAuth();
+    };
+
+    const closeMenu = () => {
+      drawer.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+
+    menuBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (closeBackdrop) closeBackdrop.addEventListener('click', closeMenu);
+
+    // Also close menu when any link is clicked
+    drawer.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link) {
+        closeMenu();
+      }
+    });
+  },
+
+  renderMobileAuth() {
+    const container = document.getElementById('mobile-menu-auth-status');
+    if (!container || !window.Auth) return;
+
+    const token = window.Auth.getToken();
+    const user = window.Auth.getCurrentUser();
+    const email = user ? user.email : null;
+
+    if (token && email) {
+      container.innerHTML = `
+        <span class="auth-user-email mobile-user-email" title="${email}">${email}</span>
+        <button id="mobile-auth-signout-btn" class="secondary-button mobile-signout-btn" type="button">Sign Out</button>
+      `;
+      container.querySelector('#mobile-auth-signout-btn')
+        ?.addEventListener('click', () => {
+          window.Auth.logout();
+        });
+    } else {
+      container.innerHTML = `
+        <button id="mobile-auth-signin-trigger" class="primary-button mobile-signin-btn" type="button">Sign In</button>
+      `;
+      container.querySelector('#mobile-auth-signin-trigger')
+        ?.addEventListener('click', () => {
+          window.Auth.openModal();
+        });
+    }
   },
 
   async handleRoute() {
