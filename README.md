@@ -398,3 +398,6 @@ Then open `index.html` or serve the folder with any static server.
 ## Notes
 
 The coach is rule-based in this version. It does not require an AI API. Future API integrations can be added behind server-side routes without breaking the local-first app.
+
+## Live Demo
+[nutri-plan-lite-ten.vercel.app](https://nutri-plan-lite-ten.vercel.app/)
