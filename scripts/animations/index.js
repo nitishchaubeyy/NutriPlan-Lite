@@ -10,6 +10,14 @@ window.LandingAnimations = (() => {
   let ctx;
 
   function init() {
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    
+    if (prefersReducedMotion) {
+      return;
+    }
+
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     if (ctx) ctx.revert();
