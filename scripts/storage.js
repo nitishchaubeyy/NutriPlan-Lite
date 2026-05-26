@@ -70,6 +70,7 @@ async function initDB() {
   if (!dbCache.profile)  dbCache.profile  = { ...DEFAULT_PROFILE };
   if (!dbCache.logs)     dbCache.logs     = {};
   if (!dbCache.settings) dbCache.settings = { notifications: true };
+  if (!dbCache.sync_queue) dbCache.sync_queue = [];
   dbCache.profile = { ...DEFAULT_PROFILE, ...dbCache.profile };
 
   return dbCache;
@@ -87,7 +88,8 @@ function createEmptyDB() {
   return {
     profile: { ...DEFAULT_PROFILE },
     logs: {},
-    settings: { notifications: true }
+    settings: { notifications: true },
+    sync_queue: []
   };
 }
 
@@ -125,7 +127,10 @@ function saveProfile(updates) {
   // Background sync — non-blocking
   if (isOnline()) {
     ApiService.profile.update(mapFrontendToBackendProfile(db.profile))
-      .catch(err => console.warn('[Storage] Profile sync failed (non-fatal):', err.message));
+      .catch(err => {
+        console.warn('[Storage] Profile sync failed, queuing action.', err.message);
+        if (window.SyncQueue) window.SyncQueue.enqueue('profile', 'update', [mapFrontendToBackendProfile(db.profile)]);
+      });
   }
 
   return db.profile;
@@ -181,7 +186,10 @@ function addFood(dateKey, entry) {
   // Background sync
   if (isOnline()) {
     ApiService.food.create(mapFrontendToBackendFood(food, dateKey))
-      .catch(err => console.warn('[Storage] addFood sync failed (non-fatal):', err.message));
+      .catch(err => {
+        console.warn('[Storage] addFood sync failed, queuing action.', err.message);
+        if (window.SyncQueue) window.SyncQueue.enqueue('food', 'create', [mapFrontendToBackendFood(food, dateKey)]);
+      });
   }
 
   return food;
@@ -200,7 +208,10 @@ function updateFood(dateKey, id, updates) {
   if (isOnline()) {
     const updated = db.logs[dateKey].foods[idx];
     ApiService.food.update(id, mapFrontendToBackendFood(updated, dateKey))
-      .catch(err => console.warn('[Storage] updateFood sync failed (non-fatal):', err.message));
+      .catch(err => {
+        console.warn('[Storage] updateFood sync failed, queuing action.', err.message);
+        if (window.SyncQueue) window.SyncQueue.enqueue('food', 'update', [id, mapFrontendToBackendFood(updated, dateKey)]);
+      });
   }
 }
 
@@ -213,7 +224,10 @@ function deleteFood(dateKey, id) {
   // Background sync
   if (isOnline()) {
     ApiService.food.delete(id)
-      .catch(err => console.warn('[Storage] deleteFood sync failed (non-fatal):', err.message));
+      .catch(err => {
+        console.warn('[Storage] deleteFood sync failed, queuing action.', err.message);
+        if (window.SyncQueue) window.SyncQueue.enqueue('food', 'delete', [id]);
+      });
   }
 }
 
@@ -232,7 +246,10 @@ function addWater(dateKey, ml) {
   // Background sync
   if (isOnline()) {
     ApiService.water.create(ml, dateKey)
-      .catch(err => console.warn('[Storage] addWater sync failed (non-fatal):', err.message));
+      .catch(err => {
+        console.warn('[Storage] addWater sync failed, queuing action.', err.message);
+        if (window.SyncQueue) window.SyncQueue.enqueue('water', 'create', [ml, dateKey]);
+      });
   }
 
   return db.logs[dateKey].water;
@@ -253,7 +270,13 @@ function setWater(dateKey, ml) {
           await ApiService.water.create(ml, dateKey);
         }
       } catch (err) {
-        console.warn('[Storage] setWater sync failed (non-fatal):', err.message);
+        console.warn('[Storage] setWater sync failed, queuing actions.', err.message);
+        if (window.SyncQueue) {
+          window.SyncQueue.enqueue('water', 'reset', [dateKey]);
+          if (ml > 0) {
+            window.SyncQueue.enqueue('water', 'create', [ml, dateKey]);
+          }
+        }
       }
     })();
   }
