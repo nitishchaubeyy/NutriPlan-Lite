@@ -17,11 +17,12 @@ if (process.env.DATABASE_URL) {
   };
 }
 
-// Add production SSL configuration if needed
+// Enable SSL in production and verify the server certificate.
+// Supabase presents a CA-signed certificate, so rejectUnauthorized must remain
+// true (the default). Setting it to false would silently accept any certificate,
+// including those presented by a MITM proxy, and must never be used in production.
 if (isProduction && process.env.DATABASE_URL) {
-  poolConfig.ssl = {
-    rejectUnauthorized: false
-  };
+  poolConfig.ssl = true;
 }
 
 const pool = new Pool(poolConfig);

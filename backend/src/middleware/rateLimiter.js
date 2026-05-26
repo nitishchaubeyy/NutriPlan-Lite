@@ -98,16 +98,19 @@ const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 /**
  * Rate limiter middleware for authentication routes (register and login).
- * Limits requests from a single IP to 100 attempts per 15-minute window.
+ * Limits requests from a single IP to 10 attempts per 15-minute window.
+ * 10 per window allows a legitimate user several retries while reducing
+ * attacker throughput from 400 guesses/hour (the previous 100-attempt limit)
+ * down to 40 guesses/hour.
  * Uses CleaningMemoryStore to prevent unbounded memory growth via TTL pruning.
  */
 const authLimiter = rateLimit({
   windowMs: WINDOW_MS,
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 10, // 10 attempts per 15-minute window per IP
   store: new CleaningMemoryStore(WINDOW_MS),
   message: {
     status: 'fail',
-    message: 'Too many requests from this IP, please try again after 15 minutes.'
+    message: 'Too many login attempts from this IP. Please try again after 15 minutes.'
   },
   standardHeaders: true,  // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false,   // Disable the `X-RateLimit-*` headers

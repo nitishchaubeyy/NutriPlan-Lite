@@ -15,8 +15,15 @@ const app = express();
 // Set up security HTTP headers
 app.use(helmet());
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with an explicit origin whitelist.
+// ALLOWED_ORIGIN must be set to the frontend URL in each deployment environment.
+// Falling back to localhost is safe for local development only.
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Parse incoming JSON requests
 app.use(express.json());
