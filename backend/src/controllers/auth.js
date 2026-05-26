@@ -10,7 +10,7 @@ const { AppError } = require('../middleware/error');
 const signToken = (id) => {
   return jwt.sign(
     { id },
-    process.env.JWT_SECRET || 'super_secret_nutriplan_token_key',
+    process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXPIRES_IN || '7d'
     }

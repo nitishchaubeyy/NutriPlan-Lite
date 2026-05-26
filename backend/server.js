@@ -1,6 +1,18 @@
 // Load environment variables first
 require('dotenv').config();
 
+if (!process.env.JWT_SECRET) {
+  throw new Error(
+    'FATAL: JWT_SECRET environment variable is not set.'
+  );
+}
+
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+  throw new Error(
+    'FATAL: JWT_SECRET must be at least 32 characters long.'
+  );
+}
+
 const logger = require('./src/config/logger');
 
 // Catch uncaught synchronous exceptions

@@ -28,7 +28,7 @@ const protect = async (req, res, next) => {
     try {
       decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET || 'super_secret_nutriplan_token_key'
+        process.env.JWT_SECRET
       );
     } catch (err) {
       // Distinguish expired tokens from other JWT errors (malformed, bad signature, etc.)
