@@ -3,7 +3,20 @@
 /* Base overrides (Mobile first) */
 .app-shell {
   padding: 0.5rem;
+  /* Reserve space for fixed bottom nav on mobile */
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* NOTE: overflow-x is set on body, NOT here —
+     overflow on a scroll ancestor clips sticky children in some browsers */
+}
+
+/* SPA content container must never exceed viewport */
+.app-content-container {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .bottom-nav {
@@ -35,22 +48,244 @@
   color: var(--green);
 }
 
+.bottom-nav a.active,
+.bottom-nav button.active {
+  color: var(--green);
+}
+
+.bottom-nav a span,
+.bottom-nav button span {
+  display: block;
+  font-size: 0.65rem;
+  margin-top: 0.15rem;
+  letter-spacing: 0.01em;
+}
+
 .desktop-nav {
   display: none;
 }
 
 /* Small Mobile (320px) */
 @media (max-width: 359px) {
-  .date-card span {
+  .date-card {
     display: none;
   }
-  
+
   .hero-panel h1 {
-    font-size: 2rem;
+    font-size: 1.85rem;
   }
 
   .water-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .app-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* Hide tour button on tiny screens — hamburger must always be visible */
+  #btn-replay-tour {
+    display: none;
+  }
+}
+
+/* Mobile – max 767px (before tablet) */
+@media (max-width: 767px) {
+  /* Prevent iOS from zooming into inputs with small font sizes */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+
+  /* Larger touch targets for food log action buttons */
+  .row-actions button {
+    min-height: 40px;
+    padding: 0 0.8rem;
+  }
+
+  /* Slightly smaller stat value on narrow screens */
+  .metric-main span {
+    font-size: 1.9rem;
+  }
+
+  /* Let analytics header stack cleanly */
+  .analytics-header-actions {
+    width: 100%;
+  }
+
+  /* Increase card spacing on mobile */
+  .dashboard-layout {
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .summary-grid {
+    gap: 1.25rem;
+  }
+
+  /* ── Dashboard header: 3-column mobile layout ─── */
+  .app-header {
+    grid-template-columns: auto 1fr auto;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .app-header .auth-status-container {
+    display: none;
+  }
+
+  .app-header .brand strong,
+  .app-header .brand small {
+    display: none;
+  }
+
+  .app-header .date-card {
+    justify-self: center;
+  }
+
+  /* Never let actions shrink or wrap — keeps hamburger always visible */
+  .header-actions {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+  }
+
+  .app-header-menu-btn {
+    display: inline-flex;
+  }
+
+  /* Bottom-sheet food drawer on mobile */
+  .drawer-card {
+    inset: auto 0 0 0;
+    width: 100%;
+    max-height: 92dvh;
+    border-radius: 24px 24px 0 0;
+    border-left: none;
+    border-top: 1px solid var(--line);
+    animation: sheet-in 280ms var(--ease);
+  }
+
+  /* Show drag handle on mobile bottom sheet */
+  .drawer-handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--line-strong);
+    margin: 0 auto 1rem;
+  }
+
+  /* ── Floating mini-AI: clear fixed bottom nav ─── */
+  .mini-ai {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    right: 1rem;
+    width: min(340px, calc(100vw - 2rem));
+  }
+
+  /* ── Toast: top strip, full width on mobile ─── */
+  #toast-container {
+    left: 0.75rem;
+    right: 0.75rem;
+    top: 0.75rem;
+  }
+
+  .app-toast {
+    min-width: unset;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* ── AI Helper page: clear bottom nav ─── */
+  .ai-helper-layout {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    min-height: 100dvh;
+    align-items: flex-start;
+  }
+
+  .ai-chat-container {
+    height: calc(100dvh - 9rem);
+    max-height: none;
+    border-radius: 20px;
+  }
+
+  /* ── Landing hero: reduce top padding ─── */
+  .landing-hero {
+    padding-top: 5rem;
+    padding-bottom: 1rem;
+  }
+
+  /* ── Hero visual mock cards: stack full width ─── */
+  .hero-visual {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .mock-card {
+    min-width: unset;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* ── Feature cards: single column on narrow mobile ─── */
+  .features-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* ── Profile form: single column ─── */
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ── CTA panel: tighter padding ─── */
+  .cta-panel {
+    padding: 2rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  /* ── Meal timeline: sensible max-height on mobile ─── */
+  .meal-timeline {
+    max-height: 420px;
+  }
+}
+
+/* Mobile ≤ 479px – compact hero */
+@media (max-width: 479px) {
+  .hero-panel {
+    padding: 1rem;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .hero-copy {
+    font-size: 0.88rem;
+    margin-top: 0.6rem;
+  }
+
+  .score-ring {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  .score-ring span {
+    font-size: 1.4rem;
+  }
+
+  /* Collapse analytics tabs to icons+short text */
+  .tab-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+  }
+
+  /* Report button: icon only */
+  #btn-generate-report span {
+    display: none;
   }
 }
 
@@ -58,6 +293,10 @@
 @media (min-width: 480px) {
   .summary-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
   
   .water-actions {
@@ -69,6 +308,7 @@
 @media (min-width: 768px) {
   .app-shell {
     padding: 1rem;
+    padding-bottom: 2rem;
     width: min(100%, calc(100% - 2rem));
   }
 
@@ -78,6 +318,18 @@
 
   .form-grid-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .form-row-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .bottom-nav {
@@ -91,6 +343,21 @@
   .hero-panel {
     flex-wrap: nowrap;
   }
+
+  .landing-hero {
+    padding-top: 7rem;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* Mini AI back to normal position */
+  .mini-ai {
+    bottom: 1rem;
+    right: calc(max(1rem, 50vw - 1280px + 1rem));
+    width: min(380px, calc(100vw - 2rem));
+  }
 }
 
 /* Small Desktops / Laptops (1024px) */
@@ -103,6 +370,10 @@
   
   .summary-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .landing-hero {
+    padding-top: 8rem;
   }
 }
 
@@ -135,23 +406,25 @@
   .nutrient-grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  .form-row-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row-3 {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
 }
 
 @media (max-width: 480px) {
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
   .macro-mini-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Print ─────────────────────────────────────────────────────── */
+@media print {
+  .bottom-nav,
+  .app-header,
+  .mini-ai,
+  #toast-container {
+    display: none !important;
+  }
+
+  .app-shell {
+    padding: 0;
   }
 }
 

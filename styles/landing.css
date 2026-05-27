@@ -127,6 +127,25 @@ body:not(.page-landing) #landing-header {
   .mobile-menu-btn {
     display: inline-flex;
   }
+
+  /* Full-screen overlay on mobile */
+  .mobile-drawer-card {
+    inset: 0 !important;
+    width: 100% !important;
+    max-height: 100dvh !important;
+    border-left: none !important;
+    border-top: none !important;
+    border-radius: 0 !important;
+    animation: item-in 220ms var(--ease) !important;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hide drag handle — not needed for full-screen overlay */
+  .mobile-drawer-card .drawer-handle {
+    display: none !important;
+  }
 }
 
 .landing-page {

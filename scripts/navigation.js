@@ -37,7 +37,7 @@ window.Navigation = {
     const closeBtn = document.getElementById('close-mobile-menu-x');
     const closeBackdrop = document.getElementById('close-mobile-menu-backdrop');
 
-    if (!drawer || !menuBtn) return;
+    if (!drawer) return;
 
     const openMenu = () => {
       drawer.classList.remove('hidden');
@@ -51,7 +51,10 @@ window.Navigation = {
       document.body.style.overflow = '';
     };
 
-    menuBtn.addEventListener('click', openMenu);
+    // Bind all hamburger buttons (landing header + dashboard header)
+    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+      btn.addEventListener('click', openMenu);
+    });
     if (closeBtn) closeBtn.addEventListener('click', closeMenu);
     if (closeBackdrop) closeBackdrop.addEventListener('click', closeMenu);
 
