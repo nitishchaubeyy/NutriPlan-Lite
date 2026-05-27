@@ -259,3 +259,81 @@ a {
 .fill-amber { background: linear-gradient(90deg, var(--amber), #fde68a); }
 .fill-cyan { background: linear-gradient(90deg, var(--teal), var(--violet)); }
 .fill-rose { background: linear-gradient(90deg, var(--rose), #fda4af); }
+
+/* ==========================================================================
+   CUSTOM GLASSMORPHIC CURSOR ENGINE (FIXED & SECURE)
+   ========================================================================== */
+
+/* will hide default system pointer in on laptops and desktops */
+@media (pointer: fine) {
+  body {
+    cursor: none !important;
+  }
+  a, button, [role="button"], .interactive-card, .theme-toggler, input, select, textarea {
+    cursor: none !important;
+  }
+}
+
+/* Central Solid Pointer Element (Core Dot) */
+.custom-cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-color, #10b981);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0; /* will hidden in starting so that not to stuck in corners */
+  transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease, opacity 0.3s ease;
+}
+
+/* Floating Radial Glow Envelope (Trailing Circle) */
+.custom-cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  background-color: rgba(16, 185, 129, 0.03);
+  backdrop-filter: blur(1px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  opacity: 0; /* hidden in starting */
+  /* transform is handled by JS translate3d, transitions operate on layout metrics */
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* we will make it display when the mouse moves,through active class */
+.custom-cursor-dot.cursor-active,
+.custom-cursor-outline.cursor-active {
+  opacity: 1;
+}
+
+/* --- MICRO-INTERACTIONS & ACTIVE STATES --- */
+
+.custom-cursor-outline.hovered {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(16, 185, 129, 0.15);
+  border-color: var(--accent-color, #10b981);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.custom-cursor-dot.hovered {
+  width: 4px;
+  height: 4px;
+  background-color: #ffffff;
+}
+
+.custom-cursor-outline.clicked {
+  width: 25px;
+  height: 25px;
+  background-color: rgba(16, 185, 129, 0.3);
+  border-color: var(--accent-color, #10b981);
+}
