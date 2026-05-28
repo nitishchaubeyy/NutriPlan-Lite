@@ -166,9 +166,18 @@ const validateFoodLog = (req, res, next) => {
     return next(new AppError('Log date must be in YYYY-MM-DD format.', 400));
   }
 
-  // Normalize: optional nutritional fields not provided in a PUT body → null
+  // Normalize: optional nutritional fields absent from a PUT body are set to
+  // null so the service layer receives a clean null instead of undefined.
+  //
+  // log_date is intentionally excluded from this list. The updateFoodLogEntry
+  // service uses `updateData[field] !== undefined` to decide whether to
+  // include a field in the SQL SET clause. Setting log_date to null when it
+  // is not present in the PUT body would make the service write
+  // `log_date = NULL`, silently wiping the existing date on every partial
+  // update that does not resend a log_date. Keeping it as undefined means
+  // the service skips it entirely, preserving the stored value.
   if (!isPost) {
-    const optionalFoodFields = ['protein', 'carbs', 'fat', 'log_date'];
+    const optionalFoodFields = ['protein', 'carbs', 'fat'];
     optionalFoodFields.forEach((field) => {
       if (req.body[field] === undefined) {
         req.body[field] = null;
