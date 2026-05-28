@@ -1,11 +1,58 @@
 // ================================================================
-// ai.js — Rule-based coach with context-aware nutrition insights
-// NutriPlan-Lite
+// Vite Build-Time Environment Variable Core Architecture
 // ================================================================
+const VITE_GEMINI_KEY = import.meta.env.VITE_GEMINI_KEY || null;
+const VITE_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || null;
 
+// Local browser storage fallback pattern (for manual settings cog injections)
+const LOCAL_GEMINI_KEY = localStorage.getItem('user_gemini_key');
+const LOCAL_SUPABASE_URL = localStorage.getItem('user_supabase_url');
+
+// Operational production runtime parameters computation
+const activeGeminiKey = VITE_GEMINI_KEY || LOCAL_GEMINI_KEY;
+const activeSupabaseUrl = VITE_SUPABASE_URL || LOCAL_SUPABASE_URL;
+
+export const isCloudModeActive = Boolean(activeGeminiKey && activeSupabaseUrl);
+
+// ================================================================
+// Client-Side API Fault Isolation & Banner Injection Pipeline
+// ================================================================
+export function checkApiStatus() {
+  if (!isCloudModeActive) {
+    console.warn("NutriPlan-Lite: Running in Local-First Demo Mode (No compile-time or local keys found).");
+    showStatusBanner("demo");
+    return false;
+  }
+  return true;
+}
+
+export function showStatusBanner(type, message = "") {
+  // Target template layout context container or top layout node body fallback
+  const aiContainer = document.getElementById('ai-coach-view') || document.getElementById('main-ai-feed') || document.body;
+  
+  // Guard-clause validation block to stop redundant duplicate injections
+  if (document.getElementById('api-status-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'api-status-banner';
+  
+  if (type === 'demo') {
+    banner.className = 'bg-blue-500/20 border border-blue-500 text-blue-200 p-4 rounded-xl my-3 text-sm text-center font-medium backdrop-blur-md transition-all duration-300';
+    banner.innerText = 'ℹ️ Running in Local-First Demo Mode. Calorie calculations and local metric updates persist offline!';
+  } else if (type === 'error') {
+    banner.className = 'bg-red-500/20 border border-red-500 text-red-200 p-4 rounded-xl my-3 text-sm text-center font-medium backdrop-blur-md transition-all duration-300';
+    banner.innerText = message || '⚠️ API Connection Fault (401/403 Invalid Context). Verify credentials inside your Settings layer.';
+  }
+
+  aiContainer.prepend(banner);
+}
+
+// ================================================================
+// Main AI Closure Component Structure
+// ================================================================
 window.AI = (() => {
 
-  // ── Contextual rule-based response engine ───────────────────────
+  // ── Contextual rule-based local fallback response engine ───────
   const rules = [
     {
       test: /^(hi|hello|hey|good morning|good evening|good afternoon)/i,
@@ -100,14 +147,14 @@ window.AI = (() => {
   ];
 
   function getContext() {
-    const profile = Storage.getProfile();
-    const dateKey = Tracker.currentDate;
-    const consumed = Tracker.computeTotals(dateKey);
-    const water = Storage.getWater(dateKey);
+    const profile = typeof Storage !== 'undefined' ? Storage.getProfile() : {};
+    const dateKey = typeof Tracker !== 'undefined' ? Tracker.currentDate : new Date().toISOString().split('T')[0];
+    const consumed = typeof Tracker !== 'undefined' ? Tracker.computeTotals(dateKey) : { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    const water = typeof Storage !== 'undefined' ? Storage.getWater(dateKey) : 0;
     const waterTarget = profile.waterTarget || 2500;
-    const targets = Dashboard.computeTargets(profile);
-    const score = Analytics.calculateHealthScore(consumed, targets, water, waterTarget);
-    const streak = Storage.getStreak();
+    const targets = typeof Dashboard !== 'undefined' ? Dashboard.computeTargets(profile) : { calories: 2000, protein: 150, carbs: 200, fat: 65 };
+    const score = typeof Analytics !== 'undefined' ? Analytics.calculateHealthScore(consumed, targets, water, waterTarget) : 70;
+    const streak = typeof Storage !== 'undefined' ? Storage.getStreak() : 0;
 
     return {
       calories: Math.round(consumed.calories),
@@ -133,24 +180,50 @@ window.AI = (() => {
     const ctx = getContext();
     const matched = rules.find(r => r.test.test(prompt));
     if (matched) return matched.reply(ctx);
-    // Default fallback
     return `I'm here to help with your nutrition. You've logged **${ctx.calories} kcal** today (${Math.round(ctx.calPct * 100)}% of goal). Ask me about meals, macros, hydration, recipes, or your progress.`;
   }
 
-  // Mini coach chat panel
+  // Production runtime external dynamic cloud dispatcher
+  async function queryCloudGeminiAI(prompt) {
+    try {
+      const targetEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${activeGeminiKey}`;
+      const response = await fetch(targetEndpoint, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({ 
+          contents: [{ parts: [{ text: prompt }] }] 
+        })
+      });
+
+      // Catch localized auth errors gracefully without exploding execution tree
+      if (response.status === 401 || response.status === 403) {
+        showStatusBanner('error', '⚠️ Remote AI processing engine rejected your credentials (401/403). Falling back to offline engine!');
+        return null;
+      }
+
+      const rawResult = await response.json();
+      return rawResult?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    } catch (err) {
+      console.error("Intercepted runtime network drop:", err);
+      showStatusBanner('error', '⚠️ Cloud API connection timed out. Local pipeline is taking over.');
+      return null;
+    }
+  }
+
+  // Mini coach chat panel handler module
   function initMainChat() {
     const feed = document.getElementById('main-ai-feed');
     const form = document.getElementById('main-ai-form');
     const input = document.getElementById('main-ai-input');
     const clearBtn = document.getElementById('clear-ai-chat');
     
-    if (!form || !feed) return; // not on ai-helper page
+    if (!form || !feed) return; 
 
-    // Prevent duplicate listeners
     if (form.dataset.initialized) return;
     form.dataset.initialized = 'true';
 
-    // Clear chat
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
         feed.innerHTML = `
@@ -161,7 +234,6 @@ window.AI = (() => {
       });
     }
 
-    // Handle suggestions
     document.querySelectorAll('.prompt-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         if (input) {
@@ -171,8 +243,7 @@ window.AI = (() => {
       });
     });
 
-    // Form submission
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const prompt = input?.value.trim();
       if (!prompt) return;
@@ -180,46 +251,34 @@ window.AI = (() => {
       appendMessage('user-bubble', prompt);
       input.value = '';
       
-      // Show typing indicator
       const typingId = 'typing-' + Date.now();
       appendMessage('ai-bubble', '...', typingId);
       
-      setTimeout(() => {
-        const typingEl = document.getElementById(typingId);
-        if (typingEl) typingEl.remove();
-        const reply = getReply(prompt);
-        appendMessage('ai-bubble', reply);
-      }, 600 + Math.random() * 400);
+      let finalReply = null;
+
+      // Conditional selection pattern based on cloud eligibility
+      if (isCloudModeActive) {
+        finalReply = await queryCloudGeminiAI(prompt);
+      }
+
+      // Local system takes over execution block if cloud returns empty/error 
+      if (!finalReply) {
+        finalReply = getReply(prompt);
+      }
+      
+      const typingEl = document.getElementById(typingId);
+      if (typingEl) typingEl.remove();
+      appendMessage('ai-bubble', finalReply);
     });
   }
 
-  function appendMessage(roleClass, text, id) {
-    const feed = document.getElementById('main-ai-feed');
-    if (!feed) return;
-    const div = document.createElement('div');
-    div.className = `chat-bubble ${roleClass}`;
-    if (id) div.id = id;
-    div.innerHTML = renderMarkdown(text);
-    feed.appendChild(div);
-    feed.scrollTop = feed.scrollHeight;
-    return div;
-  }
-
-  function renderMarkdown(text) {
-    return text
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
-  }
-
-  // Dashboard coach insights panel
+  // Dashboard coach insights panel generator module
   function generateInsights() {
     const container = document.getElementById('ai-insights');
     if (!container) return;
     const ctx = getContext();
     const insights = [];
 
-    // Calorie insight
     if (ctx.calories === 0) {
       insights.push({ type: 'info', title: 'Ready to track!', msg: 'Log your first meal to see your daily nutrition analysis.' });
     } else if (ctx.calPct > 1.1) {
@@ -230,21 +289,18 @@ window.AI = (() => {
       insights.push({ type: 'info', title: 'Keep fueling up', msg: `${Math.round(ctx.targetCal - ctx.calories)} kcal remaining to reach your daily goal.` });
     }
 
-    // Protein insight
     if (ctx.protPct < 0.5) {
       insights.push({ type: 'warning', title: 'Low protein intake', msg: `Only ${ctx.protein}g of ${ctx.targetProtein}g goal. Add eggs, chicken, or dal to boost protein.` });
     } else if (ctx.protPct >= 0.9) {
       insights.push({ type: 'success', title: 'Protein target hit!', msg: `Excellent! You're at ${ctx.protein}g protein — supporting muscle and recovery.` });
     }
 
-    // Hydration insight
     if (ctx.hydPct < 0.5) {
       insights.push({ type: 'warning', title: 'Stay hydrated', msg: `Only ${ctx.water}ml of ${ctx.waterTarget}ml. Drink a glass of water now! 💧` });
     } else if (ctx.hydPct >= 1) {
       insights.push({ type: 'success', title: 'Hydration goal met! 💧', msg: `You've hit your ${ctx.waterTarget}ml water target today. Keep it up!` });
     }
 
-    // Streak
     if (ctx.streak >= 3) {
       insights.push({ type: 'success', title: `🔥 ${ctx.streak}-day streak!`, msg: `Impressive consistency! Keep logging daily to maintain your healthy habit.` });
     }
@@ -257,5 +313,19 @@ window.AI = (() => {
     `).join('');
   }
 
-  return { initMainChat, generateInsights, getReply };
+  // Automatically execute environment validations inside closure lifecycle hooks
+  function init() {
+    checkApiStatus();
+    initMainChat();
+    generateInsights();
+  }
+
+  return { init, initMainChat, generateInsights, getReply };
 })();
+
+// Self-contained DOM lifecycle execution block
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => window.AI.init());
+} else {
+  window.AI.init();
+}

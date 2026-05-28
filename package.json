@@ -7,8 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "node scripts/check.mjs",
-    "start": "npx serve ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "description": "Local-first fitness nutrition planner with optional Memact fitness context integration."
+  "description": "Local-first fitness nutrition planner with optional Memact fitness context integration.",
+  "devDependencies": {
+    "terser": "^5.48.0",
+    "vite": "^8.0.14"
+  }
 }

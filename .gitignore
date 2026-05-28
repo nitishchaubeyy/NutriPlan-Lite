@@ -1,4 +1,15 @@
-backend/node_modules/
-backend/.env
+# Node dependencies (is se node_modules track nahi hoga)
+node_modules/
+.pnpm-store/
+
+# Vite Environment runtime assets & cache
+.vite/
+dist-ssr/
+*.local
+
+# Production Build Logs & System Files
 .DS_Store
 Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log* 
