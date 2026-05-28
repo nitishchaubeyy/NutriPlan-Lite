@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
@@ -18,12 +19,20 @@ app.use(helmet());
 // Enable CORS with an explicit origin whitelist.
 // ALLOWED_ORIGIN must be set to the frontend URL in each deployment environment.
 // Falling back to localhost is safe for local development only.
+//
+// credentials: true is required so the browser sends the HttpOnly auth cookie
+// on cross-origin requests. This must always be paired with an explicit origin
+// (not '*') — the combination of credentials + wildcard is rejected by browsers.
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
 app.use(cors({
   origin: allowedOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
+// Parse cookies so the protect middleware can read the HttpOnly auth cookie.
+app.use(cookieParser());
 
 // Parse incoming JSON requests
 app.use(express.json());

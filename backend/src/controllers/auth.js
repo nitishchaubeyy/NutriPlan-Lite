@@ -23,6 +23,60 @@ const signToken = (id, tokenVersion) => {
 };
 
 /**
+ * Set authentication cookies on the response.
+ *
+ * Two cookies are written:
+ *   - nutriplan_token: the JWT itself, HttpOnly and Secure so it is never
+ *     accessible to JavaScript and cannot be stolen via XSS.
+ *   - nutriplan_session_exp: the token's exp claim (Unix epoch, seconds) as a
+ *     plain string. This cookie is NOT HttpOnly so the frontend can read it to
+ *     determine login state and token expiry without ever touching the token.
+ *
+ * @param {object} res    - Express response object
+ * @param {string} token  - Signed JWT
+ */
+const setAuthCookies = (res, token) => {
+  const decoded = jwt.decode(token);
+  const maxAgeMs = decoded && decoded.exp
+    ? (decoded.exp - Math.floor(Date.now() / 1000)) * 1000
+    : 7 * 24 * 60 * 60 * 1000; // 7 days fallback
+
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  res.cookie('nutriplan_token', token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'strict',
+    maxAge: maxAgeMs,
+    path: '/',
+  });
+
+  // Readable (non-HttpOnly) cookie carrying only the expiry timestamp.
+  // The frontend uses this to check login state without accessing the token.
+  if (decoded && decoded.exp) {
+    res.cookie('nutriplan_session_exp', String(decoded.exp), {
+      httpOnly: false,
+      secure: isProduction,
+      sameSite: 'strict',
+      maxAge: maxAgeMs,
+      path: '/',
+    });
+  }
+};
+
+/**
+ * Clear both authentication cookies.
+ *
+ * @param {object} res - Express response object
+ */
+const clearAuthCookies = (res) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const clearOpts = { httpOnly: true, secure: isProduction, sameSite: 'strict', path: '/' };
+  res.clearCookie('nutriplan_token', clearOpts);
+  res.clearCookie('nutriplan_session_exp', { ...clearOpts, httpOnly: false });
+};
+
+/**
  * POST /api/v1/auth/register
  * Atomically registers a user and initializes their profile record.
  */
@@ -58,8 +112,11 @@ const register = async (req, res, next) => {
 
     await client.query('COMMIT');
 
-    // 5) Generate JWT and respond
+    // 5) Generate JWT, set it as an HttpOnly cookie, and respond.
+    //    The token is also returned in the response body for clients that
+    //    prefer Bearer-header transport (e.g. mobile apps, API consumers).
     const token = signToken(newUser.id, newUser.token_version);
+    setAuthCookies(res, token);
 
     res.status(201).json({
       status: 'success',
@@ -107,8 +164,10 @@ const login = async (req, res, next) => {
       return next(new AppError('Incorrect email or password.', 401));
     }
 
-    // 3) Generate JWT and return
+    // 3) Generate JWT, set it as an HttpOnly cookie, and return.
+    //    The token is also included in the response body for non-browser clients.
     const token = signToken(user.id, user.token_version);
+    setAuthCookies(res, token);
 
     res.status(200).json({
       status: 'success',
@@ -138,6 +197,10 @@ const logout = async (req, res, next) => {
       [req.user.id]
     );
 
+    // Clear the auth cookies so browsers that store the session via cookie
+    // are also signed out immediately without waiting for token expiry.
+    clearAuthCookies(res);
+
     res.status(200).json({
       status: 'success',
       message: 'Logged out successfully.'
@@ -150,5 +213,7 @@ const logout = async (req, res, next) => {
 module.exports = {
   register,
   login,
-  logout
+  logout,
+  setAuthCookies,
+  clearAuthCookies
 };

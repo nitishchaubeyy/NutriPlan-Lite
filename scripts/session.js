@@ -3,40 +3,95 @@
 // NutriPlan-Lite
 //
 // Responsibilities:
-//   - Store / restore JWT from localStorage
 //   - Track user profile in localStorage
+//   - Read auth state from the nutriplan_session_exp cookie (set by the
+//     backend on login; not HttpOnly so JS can read the expiry timestamp
+//     without ever accessing the JWT itself)
 //   - Guest (demo) mode detection
-//   - Logout: clear all auth keys
+//   - Logout: clear local state (the backend clears the HttpOnly cookie)
 //   - Token refresh stub (ready for future implementation)
+//
+// Token storage: the JWT is stored exclusively in the HttpOnly
+// nutriplan_token cookie set by the backend on login and register. That
+// cookie is inaccessible to JavaScript by design, protecting it from XSS
+// theft. The frontend never stores the raw token in localStorage.
 // ================================================================
 
 window.Session = (() => {
   // ── Storage keys ───────────────────────────────────────────────
-  const TOKEN_KEY   = 'nutriplan_token';
   const EMAIL_KEY   = 'nutriplan_user_email';
   const PROFILE_KEY = 'nutriplan_user_profile';
 
-  // ── Token management ────────────────────────────────────────────
+  // Cookie name that carries the token expiry (epoch seconds).
+  // This cookie is NOT HttpOnly so the frontend can read it to determine
+  // login state without accessing the JWT itself.
+  const SESSION_EXP_COOKIE = 'nutriplan_session_exp';
 
-  /** Returns the stored JWT or null. */
-  function getToken() {
-    return localStorage.getItem(TOKEN_KEY) || null;
+  // ── Cookie helpers ───────────────────────────────────────────────
+
+  /**
+   * Read a cookie value by name from document.cookie.
+   * Returns null if the cookie is not present.
+   */
+  function _getCookie(name) {
+    const match = document.cookie
+      .split(';')
+      .map(c => c.trim())
+      .find(c => c.startsWith(name + '='));
+    return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
   }
 
-  /** Persists a new JWT to localStorage. */
-  function setToken(token) {
-    if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
-    } else {
-      localStorage.removeItem(TOKEN_KEY);
-    }
+  // ── Token management ────────────────────────────────────────────
+
+  /**
+   * The JWT lives in an HttpOnly cookie managed exclusively by the backend.
+   * This function always returns null because JavaScript cannot read HttpOnly
+   * cookies, which is precisely the XSS protection we want.
+   *
+   * ApiService sends credentials: 'include' on every fetch so the browser
+   * attaches the HttpOnly cookie automatically without JS intervention.
+   *
+   * @returns {null}
+   */
+  function getToken() {
+    return null;
+  }
+
+  /**
+   * No-op: the backend controls the HttpOnly token cookie.
+   * Retained for interface compatibility only.
+   */
+  function setToken() {
+    // Token storage is handled server-side via Set-Cookie.
   }
 
   // ── Authentication state ────────────────────────────────────────
 
-  /** True when a JWT is present in storage. */
+  /**
+   * True when the nutriplan_session_exp cookie is present and has not expired.
+   *
+   * The backend sets this readable (non-HttpOnly) cookie alongside the
+   * HttpOnly token cookie on login and register. Its value is the token's
+   * exp claim as a Unix epoch second. The frontend uses it to determine login
+   * state without ever accessing the JWT itself.
+   *
+   * If the cookie is absent or expired, any cached local state is cleared
+   * so the app falls back to guest/demo mode immediately.
+   */
   function isAuthenticated() {
-    return !!getToken();
+    const expStr = _getCookie(SESSION_EXP_COOKIE);
+    if (!expStr) return false;
+
+    const exp = parseInt(expStr, 10);
+    if (!Number.isFinite(exp)) return false;
+
+    if (Math.floor(Date.now() / 1000) >= exp) {
+      // Session has expired: wipe local storage so the UI resets cleanly.
+      _clearLocalStorage();
+      return false;
+    }
+
+    return true;
   }
 
   /** Returns the decoded email from storage (not from JWT payload). */
@@ -77,11 +132,15 @@ window.Session = (() => {
 
   /**
    * Persist credentials after a successful login or register.
-   * @param {string} token
+   *
+   * The JWT is managed by the backend via the HttpOnly cookie set in the
+   * login/register response. Only the email (non-sensitive, used for UI
+   * display) is stored locally here.
+   *
+   * @param {string} _token  Unused: token lives in the HttpOnly cookie.
    * @param {string} email
    */
-  function save(token, email) {
-    setToken(token);
+  function save(_token, email) {
     if (email) localStorage.setItem(EMAIL_KEY, email);
   }
 
@@ -100,13 +159,24 @@ window.Session = (() => {
   // ── Logout / Guest mode ─────────────────────────────────────────
 
   /**
+   * Clear localStorage-backed session state.
+   * The HttpOnly token cookie and the session_exp cookie are cleared by the
+   * backend's logout endpoint (via Set-Cookie with Max-Age=0). This function
+   * handles only the JS-accessible local state.
+   */
+  function _clearLocalStorage() {
+    localStorage.removeItem(EMAIL_KEY);
+    localStorage.removeItem(PROFILE_KEY);
+    // Remove the legacy token key in case it was set by an older app version.
+    localStorage.removeItem('nutriplan_token');
+  }
+
+  /**
    * Clear all session state and return to demo mode.
    * Does NOT wipe the nutriplan_v2 database key — handled by Auth.logout().
    */
   function clear() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EMAIL_KEY);
-    localStorage.removeItem(PROFILE_KEY);
+    _clearLocalStorage();
   }
 
   /**
