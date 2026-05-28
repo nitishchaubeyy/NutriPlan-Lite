@@ -11,7 +11,33 @@
 
 window.ApiService = (() => {
   // ── Config ─────────────────────────────────────────────────────
-  const API_BASE = 'http://localhost:4000/api/v1';
+  //
+  // API_BASE is resolved at runtime from window.NUTRIPLAN_API_BASE so the
+  // same frontend bundle works across local dev, staging, and production
+  // without a rebuild.
+  //
+  // To configure for a deployed environment, set this variable before the
+  // scripts are loaded, for example in an inline <script> tag:
+  //
+  //   <script>window.NUTRIPLAN_API_BASE = "https://api.example.com/api/v1";</script>
+  //
+  // When the variable is absent the code falls back to localhost:4000 for
+  // local development. A console warning is emitted if the page is served
+  // from a non-localhost origin and the variable has not been set, so
+  // deployment misconfigurations are immediately visible in DevTools.
+  const API_BASE = window.NUTRIPLAN_API_BASE || 'http://localhost:4000/api/v1';
+
+  if (!window.NUTRIPLAN_API_BASE) {
+    const host = window.location.hostname;
+    if (host !== 'localhost' && host !== '127.0.0.1') {
+      console.warn(
+        '[NutriPlan] NUTRIPLAN_API_BASE is not set. API calls will target ' +
+        'http://localhost:4000/api/v1, which will fail in this deployed ' +
+        'environment. Set window.NUTRIPLAN_API_BASE before loading this script.'
+      );
+    }
+  }
+
   const DEFAULT_TIMEOUT_MS = 8000;
 
   const MAX_RETRIES = 3;
