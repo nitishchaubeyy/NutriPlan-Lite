@@ -104,7 +104,20 @@ window.Auth = (() => {
     }
   }
 
-  function logout() {
+  async function logout() {
+    // Notify the backend first so it increments token_version, instantly
+    // invalidating every outstanding JWT for this user (including copies
+    // held by other sessions or devices).
+    //
+    // If the call fails (e.g. network down, token already expired) we still
+    // clear the local session so the user is signed out on this device.
+    // A failed backend call is logged as a warning, not shown to the user.
+    try {
+      await ApiService.auth.logout();
+    } catch (err) {
+      console.warn('[Auth] Backend logout call failed; clearing local session anyway.', err);
+    }
+
     window.Session.clear();
 
     // Reset local DB to go back to demo defaults

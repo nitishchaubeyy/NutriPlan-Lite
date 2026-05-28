@@ -7,7 +7,7 @@
 export const AppConfig = {
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL || localStorage.getItem('local_supabase_url') || '',
   geminiKey: import.meta.env.VITE_GEMINI_KEY || localStorage.getItem('local_gemini_key') || '',
-  
+
   // Agar API credentials missing hain toh app seamlessly Local-First mode me chalegi
   get isLocalMode() {
     return !this.supabaseUrl || !this.geminiKey;
@@ -29,7 +29,7 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
   }
 
   let attempt = 0;
-  
+
   while (attempt <= MAX_RETRIES) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
@@ -61,7 +61,7 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
       if (!res.ok) {
         throw {
           status: res.status,
-          message: payload.message || `HTTP ${res.status} — ${res.statusText}`,
+          message: payload.message || `HTTP ${res.status} - ${res.statusText}`,
           data: payload
         };
       }
@@ -71,11 +71,11 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
 
     } catch (err) {
       clearTimeout(timeoutId);
-      
+
       const isTransient = !err.status || err.status === 0 || err.status >= 500;
       const isAbort = err && err.name === 'AbortError';
       const canRetry = method === 'GET' && (isTransient || isAbort) && attempt < MAX_RETRIES;
-      
+
       if (canRetry) {
         attempt++;
         const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
@@ -106,6 +106,15 @@ export const auth = {
   },
   register(email, password) {
     return post('/auth/register', { email, password });
+  },
+  /**
+   * POST /auth/logout (requires token)
+   * Increments token_version on the backend so all existing JWTs for this
+   * user are immediately invalidated, even those held by other sessions.
+   * @returns {Promise<{status: string, message: string}>}
+   */
+  logout() {
+    return post('/auth/logout', {});
   },
   profile() {
     return get('/auth/profile');
