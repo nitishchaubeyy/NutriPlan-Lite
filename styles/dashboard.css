@@ -15,8 +15,8 @@
   align-items: center;
   min-height: 64px;
   padding: 0.6rem 1rem;
-  background: rgba(7, 12, 22, 0.72);
-  border: 1px solid var(--line);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(24px);
@@ -59,7 +59,7 @@
 .date-card {
   gap: 0.45rem;
   padding: 0.35rem;
-  background: rgba(255, 255, 255, 0.045);
+  background: rgba(148, 163, 184, 0.08);
   border: 1px solid var(--line);
   border-radius: 16px;
 }
@@ -88,11 +88,13 @@
   color: var(--muted);
   border-radius: 12px;
   font-weight: 800;
+  transition: all 0.2s var(--ease);
 }
 
-.desktop-nav a:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.055);
+.desktop-nav a:hover,
+.desktop-nav a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .dashboard-layout {

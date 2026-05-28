@@ -9,6 +9,7 @@
   --border: rgba(148, 163, 184, 0.16);
   --border-strong: rgba(148, 163, 184, 0.28);
   --accent: #38f2a6;
+  --accent-soft: rgba(56, 242, 166, 0.12);
 
   /* Legacy mappings (for backwards compatibility) */
   --bg: var(--bg-primary);
@@ -61,6 +62,7 @@
   --border: rgba(148, 163, 184, 0.24);
   --border-strong: rgba(148, 163, 184, 0.36);
   --accent: #1dbc7d;
+  --accent-soft: rgba(29, 188, 125, 0.1);
 
   --muted: #64748b;
   --muted-2: #94a3b8;
@@ -219,8 +221,13 @@ a {
 .secondary-button,
 .icon-button {
   color: var(--soft);
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(148, 163, 184, 0.08);
   border: 1px solid var(--line);
+}
+
+.secondary-button:hover,
+.icon-button:hover {
+  background: rgba(148, 163, 184, 0.16);
 }
 
 .secondary-button {

@@ -17,12 +17,12 @@ body:not(.page-landing) #landing-header {
   transform: translateX(-50%);
   z-index: 100;
   width: min(900px, calc(100% - 2rem));
-  background: rgba(6, 10, 18, 0.65);
+  background: var(--surface);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow);
 }
 
 .landing-header-container {
@@ -897,10 +897,10 @@ body:not(.page-landing) #landing-header {
 .mobile-drawer-card {
   display: flex;
   flex-direction: column;
-  background: rgba(6, 10, 18, 0.94) !important;
+  background: var(--surface-strong) !important;
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 1px solid var(--border) !important;
   width: min(320px, 100%) !important;
   padding: 1.5rem !important;
 }
@@ -918,8 +918,8 @@ body:not(.page-landing) #landing-header {
   color: var(--soft);
   padding: 0.8rem 1.2rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: rgba(148, 163, 184, 0.06);
+  border: 1px solid var(--border);
   transition: all 0.2s var(--ease);
   display: flex;
   align-items: center;
@@ -941,9 +941,9 @@ body:not(.page-landing) #landing-header {
 
 .mobile-drawer-nav a:hover,
 .mobile-drawer-nav a.active {
-  color: var(--text);
-  background: rgba(56, 242, 166, 0.08);
-  border-color: rgba(56, 242, 166, 0.2);
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent);
   transform: translateX(4px);
 }
 

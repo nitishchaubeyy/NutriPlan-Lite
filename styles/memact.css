@@ -7,7 +7,7 @@
   border: 1px solid rgba(56, 242, 166, 0.18);
   background:
     linear-gradient(135deg, rgba(56, 242, 166, 0.08), rgba(34, 211, 238, 0.04)),
-    rgba(13, 22, 37, 0.82);
+    var(--surface);
 }
 
 .memact-onboarding-panel {
@@ -51,7 +51,7 @@
 .text-button:hover {
   color: var(--text);
   border-color: var(--line-strong);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(148, 163, 184, 0.1);
 }
 
 .memact-status {
@@ -86,7 +86,7 @@
   padding: 0.75rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(148, 163, 184, 0.08);
 }
 
 .memact-context-list span {
