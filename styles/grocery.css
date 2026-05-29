@@ -1,0 +1,215 @@
+.grocery-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  padding: 1rem 0;
+  max-width: 100%;
+}
+
+.grocery-hero {
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.grocery-hero-text h1 {
+  font-size: 2.2rem;
+  font-weight: 850;
+  line-height: 1.2;
+  margin: var(--space-xs) 0;
+}
+
+.grocery-hero-text p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 500px;
+}
+
+.grocery-progress-card {
+  padding: 1.5rem;
+  min-width: 250px;
+  background: rgba(148, 163, 184, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  align-items: center;
+  justify-content: center;
+}
+
+.grocery-progress-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) 0%, rgba(148, 163, 184, 0.12) 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin-bottom: var(--space-xs);
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.grocery-progress-ring::before {
+  content: '';
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  background: var(--bg-secondary);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.grocery-progress-ring span {
+  position: relative;
+  z-index: 2;
+}
+
+.grocery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.grocery-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.grocery-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-sm);
+}
+
+.grocery-card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.grocery-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+.badge-protein { color: #fbbf24; background: rgba(251, 191, 36, 0.12); border: 1px dashed rgba(251, 191, 36, 0.3); }
+.badge-carbs { color: #22d3ee; background: rgba(34, 211, 238, 0.12); border: 1px dashed rgba(34, 211, 238, 0.3); }
+.badge-fats { color: #fb7185; background: rgba(251, 113, 133, 0.12); border: 1px dashed rgba(251, 113, 133, 0.3); }
+.badge-micronutrients { color: #8b8cff; background: rgba(139, 140, 255, 0.12); border: 1px dashed rgba(139, 140, 255, 0.3); }
+
+.grocery-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.grocery-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: rgba(148, 163, 184, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  user-select: none;
+  transition: background 150ms ease, transform 150ms ease, border-color 150ms ease;
+}
+
+.grocery-item:hover {
+  background: rgba(148, 163, 184, 0.08);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.grocery-item-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.grocery-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: transparent;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.grocery-checkbox::after {
+  content: '✓';
+  font-weight: 900;
+}
+
+.grocery-item.checked {
+  background: rgba(56, 242, 166, 0.03);
+  border-color: rgba(56, 242, 166, 0.18);
+  opacity: 0.65;
+}
+
+.grocery-item.checked .grocery-checkbox {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #04150e;
+}
+
+.grocery-item.checked .grocery-name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.grocery-name {
+  font-weight: 600;
+  transition: color 150ms ease;
+}
+
+.grocery-qty {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.grocery-action-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .grocery-hero {
+    padding: 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .grocery-progress-card {
+    min-width: 100%;
+  }
+}

@@ -38,6 +38,8 @@ const UI = {
   }
 };
 
+window.UI = UI;
+
 // Hardware-Accelerated Interactive Custom Cursor Engine for Issue #78
 document.addEventListener('DOMContentLoaded', () => {
   const cursorDot = document.getElementById('cursorDot');

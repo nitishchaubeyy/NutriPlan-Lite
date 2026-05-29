@@ -185,20 +185,21 @@ function initSupabase() {
             }
 
             supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
-            demoBadge.classList.add('hidden');
+            if (demoBadge) demoBadge.classList.add('hidden');
             
             // Listen for authentication changes
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     currentUser = session.user;
-                    document.getElementById('user-email').innerText = currentUser.email;
-                    userInfo.classList.remove('hidden');
-                    loginBtn.classList.add('hidden');
+                    const emailEl = document.getElementById('user-email');
+                    if (emailEl) emailEl.innerText = currentUser.email;
+                    if (userInfo) userInfo.classList.remove('hidden');
+                    if (loginBtn) loginBtn.classList.add('hidden');
                     loadUserData();
                 } else {
                     currentUser = null;
-                    userInfo.classList.add('hidden');
-                    loginBtn.classList.remove('hidden');
+                    if (userInfo) userInfo.classList.add('hidden');
+                    if (loginBtn) loginBtn.classList.remove('hidden');
                     loadLocalFallbackData();
                 }
             });
@@ -211,14 +212,15 @@ function initSupabase() {
                     const session = data?.session;
                     if (session) {
                         currentUser = session.user;
-                        document.getElementById('user-email').innerText = currentUser.email;
-                        userInfo.classList.remove('hidden');
-                        loginBtn.classList.add('hidden');
+                        const emailEl = document.getElementById('user-email');
+                        if (emailEl) emailEl.innerText = currentUser.email;
+                        if (userInfo) userInfo.classList.remove('hidden');
+                        if (loginBtn) loginBtn.classList.add('hidden');
                         loadUserData();
                     } else {
                         currentUser = null;
-                        userInfo.classList.add('hidden');
-                        loginBtn.classList.remove('hidden');
+                        if (userInfo) userInfo.classList.add('hidden');
+                        if (loginBtn) loginBtn.classList.remove('hidden');
                         loadLocalFallbackData();
                     }
                 })
@@ -239,9 +241,9 @@ function initSupabase() {
 function setupLocalDemoMode(demoBadge, loginBtn, userInfo) {
     supabaseClient = null;
     currentUser = null;
-    demoBadge.classList.remove('hidden');
-    loginBtn.classList.add('hidden');
-    userInfo.classList.add('hidden');
+    if (demoBadge) demoBadge.classList.remove('hidden');
+    if (loginBtn) loginBtn.classList.add('hidden');
+    if (userInfo) userInfo.classList.add('hidden');
     loadLocalFallbackData();
 }
 
