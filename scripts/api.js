@@ -20,6 +20,15 @@ const MAX_RETRIES = 3;
 
 /**
  * Internal fetch with timeout, auth headers, and normalised errors.
+ * Includes exponential backoff retry logic for safe GET requests.
+ *
+ * Authentication: the JWT is stored in an HttpOnly cookie set by the
+ * backend on login and register. The browser attaches it automatically
+ * when credentials: 'include' is set, so no explicit Authorization header
+ * is needed. The token is never readable by JavaScript, protecting it
+ * from XSS-based theft.
+ *
+ * Throws an { status, message, data } object on failure.
  */
 async function request(method, endpoint, body = null, extraHeaders = {}) {
   // Dual-mode guard clause: intercept calls early if in Local Demo Mode
@@ -35,17 +44,17 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
     const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
     try {
-      const token = window.Session ? window.Session.getToken() : localStorage.getItem('nutriplan_token');
-
       const headers = {
         'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...extraHeaders
       };
 
       const fetchOptions = {
         method,
         headers,
+        // Send the HttpOnly auth cookie on every request. The browser
+        // attaches it automatically; no JS token reading is required.
+        credentials: 'include',
         signal: controller.signal
       };
 

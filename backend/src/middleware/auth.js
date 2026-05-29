@@ -3,17 +3,29 @@ const db = require('../config/db');
 const { AppError } = require('./error');
 
 /**
- * Route protection middleware. Checks Authorization header for a valid Bearer JWT.
+ * Route protection middleware.
+ *
+ * Accepts a JWT from two sources, in preference order:
+ *   1. The HttpOnly `nutriplan_token` cookie (set by the backend on login /
+ *      register). This is the preferred transport because the cookie is never
+ *      accessible to JavaScript, making it immune to XSS token theft.
+ *   2. The `Authorization: Bearer <token>` header, kept for backward
+ *      compatibility with non-browser clients (mobile apps, API consumers).
  */
 const protect = async (req, res, next) => {
   try {
     let token;
 
-    // 1) Verify presence of authorization header and Bearer token format
-    if (
+    // 1) Prefer the HttpOnly cookie (set automatically by the browser on
+    //    same-origin requests and cross-origin requests when credentials: 'include'
+    //    is set in the fetch call).
+    if (req.cookies && req.cookies.nutriplan_token) {
+      token = req.cookies.nutriplan_token;
+    } else if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
     ) {
+      // Fallback: Bearer header for non-browser clients.
       token = req.headers.authorization.split(' ')[1];
     }
 
