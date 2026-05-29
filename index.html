@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="styles/memact.css">
   <link rel="stylesheet" href="styles/responsive.css">
   <link rel="stylesheet" href="styles/sidebar.css">
+  <link rel="stylesheet" href="styles/grocery.css">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
@@ -57,6 +58,7 @@
   <script type="module" src="scripts/onboarding.js"></script>
   <script type="module" src="scripts/reports.js"></script>
   <script type="module" src="scripts/dashboard.js"></script>
+  <script type="module" src="scripts/grocery.js"></script>
   <script type="module" src="scripts/app.js"></script>
 </head>
 <body>
@@ -76,6 +78,7 @@
           <a href="#landing" data-nav="landing">Home</a>
           <a href="#features">Features</a>
           <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+          <a href="#grocery" data-nav="grocery">Grocery</a>
           <a href="#ai-helper" data-nav="ai-helper">Coach</a>
         </nav>
 
@@ -110,6 +113,7 @@
       <nav class="desktop-nav" aria-label="Primary">
         <a href="#landing" data-nav="landing">Home</a>
         <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#grocery" data-nav="grocery">Grocery</a>
         <a href="#ai-helper" data-nav="ai-helper">Coach</a>
       </nav>
 
@@ -130,7 +134,7 @@
     <nav class="bottom-nav" aria-label="Mobile navigation">
       <a href="#landing" data-nav="landing">🏠<span>Home</span></a>
       <a href="#dashboard" data-nav="dashboard">📊<span>Dashboard</span></a>
-      <button type="button" data-open-food-drawer class="bottom-nav-add">＋</button>
+      <a href="#grocery" data-nav="grocery">🛒<span>Grocery</span></a>
       <a href="#ai-helper" data-nav="ai-helper">💬<span>Coach</span></a>
     </nav>
   </div>
@@ -1088,6 +1092,7 @@
         <a href="#landing" data-nav="landing">Home</a>
         <a href="#features">Features</a>
         <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#grocery" data-nav="grocery">Grocery</a>
         <a href="#ai-helper" data-nav="ai-helper">Coach</a>
         <a href="#" id="mobile-btn-replay-tour" class="mobile-nav-tour-link">❓ Start Onboarding Tour</a>
         <hr class="mobile-nav-divider">
@@ -1270,6 +1275,43 @@
       </div>
     </div>
   </div>
+
+  <template id="template-grocery">
+    <div class="grocery-layout container" style="padding-top: 8rem; padding-bottom: 4rem; min-height: 80vh;">
+      <section class="grocery-hero glass-panel">
+        <div class="grocery-hero-text">
+          <p class="eyebrow">Smart Planner</p>
+          <h1>Weekly Grocery List</h1>
+          <p>Your personalized shopping items computed automatically to match your demographic baseline and nutritional targets.</p>
+        </div>
+        <div class="grocery-progress-card">
+          <div class="grocery-progress-ring" id="grocery-progress-ring">
+            <span>0%</span>
+          </div>
+          <small class="eyebrow">Shopping Progress</small>
+        </div>
+      </section>
+
+      <section id="grocery-timeline" aria-live="polite">
+        <!-- Structured lists filled dynamically by scripts/grocery.js -->
+      </section>
+
+      <div class="grocery-action-bar">
+        <button id="grocery-btn-reset" class="secondary-button" type="button">Reset Shopping Checklist</button>
+        <button id="grocery-btn-copy" class="primary-button" type="button">Copy List to Clipboard</button>
+      </div>
+    </div>
+
+    <!-- Footer Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Footer -->
+    <footer class="landing-footer container">
+      <div class="footer-bottom" style="justify-content: center;">
+        <p class="muted">© 2026 NutriPlan Lite. All rights reserved. Built for a healthier tomorrow.</p>
+      </div>
+    </footer>
+  </template>
 
   <template id="template-faq">
     <div class="landing-page">

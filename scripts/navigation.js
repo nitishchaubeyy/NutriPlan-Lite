@@ -6,6 +6,7 @@ window.Navigation = {
   routes: {
     'landing': 'pages/landing.html',
     'dashboard': 'pages/dashboard.html',
+    'grocery': 'pages/grocery.html',
     'ai-helper': 'pages/ai-helper.html',
     'faq': 'pages/faq.html',
     'privacy': 'pages/privacy.html'
@@ -146,6 +147,11 @@ window.Navigation = {
       // If it's the AI Helper, trigger AI initialization
       if (hash === 'ai-helper' && window.AI) {
         window.AI.initMainChat();
+      }
+
+      // If it's the Grocery page, trigger Grocery initialization
+      if (hash === 'grocery' && window.Grocery) {
+        window.Grocery.init();
       }
 
     } catch (err) {
