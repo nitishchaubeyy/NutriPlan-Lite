@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="styles/responsive.css">
   <link rel="stylesheet" href="styles/sidebar.css">
   <link rel="stylesheet" href="styles/grocery.css">
+  <link rel="stylesheet" href="styles/reminders.css">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
@@ -59,6 +60,7 @@
   <script type="module" src="scripts/reports.js"></script>
   <script type="module" src="scripts/dashboard.js"></script>
   <script type="module" src="scripts/grocery.js"></script>
+  <script type="module" src="scripts/reminders.js"></script>
   <script type="module" src="scripts/app.js"></script>
 </head>
 <body>
@@ -79,6 +81,7 @@
           <a href="#features">Features</a>
           <a href="#dashboard" data-nav="dashboard">Dashboard</a>
           <a href="#grocery" data-nav="grocery">Grocery</a>
+          <a href="#reminders" data-nav="reminders">Reminders</a>
           <a href="#ai-helper" data-nav="ai-helper">Coach</a>
         </nav>
 
@@ -114,6 +117,7 @@
         <a href="#landing" data-nav="landing">Home</a>
         <a href="#dashboard" data-nav="dashboard">Dashboard</a>
         <a href="#grocery" data-nav="grocery">Grocery</a>
+        <a href="#reminders" data-nav="reminders">Reminders</a>
         <a href="#ai-helper" data-nav="ai-helper">Coach</a>
       </nav>
 
@@ -135,6 +139,7 @@
       <a href="#landing" data-nav="landing">🏠<span>Home</span></a>
       <a href="#dashboard" data-nav="dashboard">📊<span>Dashboard</span></a>
       <a href="#grocery" data-nav="grocery">🛒<span>Grocery</span></a>
+      <a href="#reminders" data-nav="reminders">🔔<span>Alerts</span></a>
       <a href="#ai-helper" data-nav="ai-helper">💬<span>Coach</span></a>
     </nav>
   </div>
@@ -1093,6 +1098,7 @@
         <a href="#features">Features</a>
         <a href="#dashboard" data-nav="dashboard">Dashboard</a>
         <a href="#grocery" data-nav="grocery">Grocery</a>
+        <a href="#reminders" data-nav="reminders">Reminders</a>
         <a href="#ai-helper" data-nav="ai-helper">Coach</a>
         <a href="#" id="mobile-btn-replay-tour" class="mobile-nav-tour-link">❓ Start Onboarding Tour</a>
         <hr class="mobile-nav-divider">
@@ -1300,6 +1306,32 @@
         <button id="grocery-btn-reset" class="secondary-button" type="button">Reset Shopping Checklist</button>
         <button id="grocery-btn-copy" class="primary-button" type="button">Copy List to Clipboard</button>
       </div>
+    </div>
+
+    <!-- Footer Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Footer -->
+    <footer class="landing-footer container">
+      <div class="footer-bottom" style="justify-content: center;">
+        <p class="muted">© 2026 NutriPlan Lite. All rights reserved. Built for a healthier tomorrow.</p>
+      </div>
+    </footer>
+  </template>
+
+  <template id="template-reminders">
+    <div class="reminders-layout container" style="padding-top: 8rem; padding-bottom: 4rem; min-height: 80vh;">
+      <section class="reminders-hero glass-panel">
+        <div class="reminders-hero-text">
+          <p class="eyebrow">Smart System</p>
+          <h1>Meal Reminders & Habit Compliance</h1>
+          <p>Schedule meal time triggers, configure browser push alerts, and track daily consistency habits automatically calculated for your constraints.</p>
+        </div>
+      </section>
+
+      <section id="reminders-timeline" aria-live="polite">
+        <!-- Reminders and Habits filled dynamically by scripts/reminders.js -->
+      </section>
     </div>
 
     <!-- Footer Divider -->

@@ -7,6 +7,7 @@ window.Navigation = {
     'landing': 'pages/landing.html',
     'dashboard': 'pages/dashboard.html',
     'grocery': 'pages/grocery.html',
+    'reminders': 'pages/reminders.html',
     'ai-helper': 'pages/ai-helper.html',
     'faq': 'pages/faq.html',
     'privacy': 'pages/privacy.html'
@@ -152,6 +153,11 @@ window.Navigation = {
       // If it's the Grocery page, trigger Grocery initialization
       if (hash === 'grocery' && window.Grocery) {
         window.Grocery.init();
+      }
+
+      // If it's the Reminders page, trigger Reminders initialization
+      if (hash === 'reminders' && window.Reminders) {
+        window.Reminders.init();
       }
 
     } catch (err) {

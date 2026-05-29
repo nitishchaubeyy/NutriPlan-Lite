@@ -116,6 +116,8 @@ window.addEventListener('pageLoaded', async (e) => {
     if (window.AI) AI.initMainChat();
   } else if (page === 'grocery') {
     if (window.Grocery) window.Grocery.init();
+  } else if (page === 'reminders') {
+    if (window.Reminders) window.Reminders.init();
   }
 
   // Global theme toggle (always available in headers)
