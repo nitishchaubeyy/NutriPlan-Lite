@@ -123,12 +123,22 @@ const validateFoodLog = (req, res, next) => {
     if (quantity_grams === undefined || isNaN(qty) || qty <= 0) {
       return next(new AppError('Quantity in grams must be a positive number.', 400));
     }
+    // Upper bound: no single serving exceeds 10 kg (10,000 g). Values above
+    // this are physiologically impossible and indicate a data entry error.
+    if (qty > 10000) {
+      return next(new AppError('Quantity in grams cannot exceed 10,000 g (10 kg).', 400));
+    }
   }
 
   if (isPost || calories !== undefined) {
     const cals = parseInt(calories, 10);
     if (calories === undefined || isNaN(cals) || cals < 0) {
       return next(new AppError('Calories must be a non-negative integer.', 400));
+    }
+    // Upper bound: no single food item exceeds 10,000 kcal. Storing values
+    // above this would skew daily total calculations and reports.
+    if (cals > 10000) {
+      return next(new AppError('Calories cannot exceed 10,000 kcal per entry.', 400));
     }
   }
 
