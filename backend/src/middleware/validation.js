@@ -157,8 +157,17 @@ const validateFoodLog = (req, res, next) => {
     if (!meal_type || typeof meal_type !== 'string' || meal_type.trim() === '') {
       return next(new AppError('Meal type must be a valid string.', 400));
     }
-    if (meal_type.trim().length > 20) {
-      return next(new AppError('Meal type must not exceed 20 characters.', 400));
+    // Restrict meal_type to a fixed allowlist so per-meal analytics grouping
+    // is consistent. Accepting any non-empty string silently stores corrupted
+    // values that break aggregation queries and analytics reports.
+    const ALLOWED_MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
+    if (!ALLOWED_MEAL_TYPES.includes(meal_type.trim().toLowerCase())) {
+      return next(
+        new AppError(
+          `Meal type must be one of: ${ALLOWED_MEAL_TYPES.join(', ')}.`,
+          400
+        )
+      );
     }
   }
 
