@@ -5,10 +5,18 @@ const { AppError } = require('../middleware/error');
 /**
  * Retrieves food log entries for a user, optionally filtered by log_date.
  */
+// Maximum number of food log rows returned in a single query.
+// Without a LIMIT the query performs a full user-partition scan and
+// loads all historical records into memory, making response time and
+// memory usage proportional to the total number of entries ever logged
+// by the user. For date-filtered requests the date index bounds the
+// scan anyway, so LIMIT adds negligible overhead there.
+const FOOD_LOG_MAX_ROWS = 500;
+
 const getFoodLogsByUserId = async (userId, date = null) => {
   let queryText = `
-    SELECT id, user_id, log_date, food_name, quantity_grams, calories, protein, carbs, fat, meal_type, created_at 
-    FROM food_logs 
+    SELECT id, user_id, log_date, food_name, quantity_grams, calories, protein, carbs, fat, meal_type, created_at
+    FROM food_logs
     WHERE user_id = $1
   `;
   const queryParams = [userId];
@@ -18,7 +26,7 @@ const getFoodLogsByUserId = async (userId, date = null) => {
     queryParams.push(date);
   }
 
-  queryText += ' ORDER BY created_at DESC';
+  queryText += ` ORDER BY created_at DESC LIMIT ${FOOD_LOG_MAX_ROWS}`;
 
   const result = await db.query(queryText, queryParams);
   return result.rows;
