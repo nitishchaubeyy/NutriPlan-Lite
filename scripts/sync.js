@@ -75,7 +75,17 @@ window.SyncQueue = (() => {
         _saveQueue(queue);
         itemsProcessed++;
       } catch (err) {
-        // Stop flushing if we hit a network failure / server offline
+        const status = err.status || 0;
+        
+        // If it's a permanent client error (4xx) OR max retries exceeded, discard the item
+        if ((status >= 400 && status < 500) || (item.retryCount || 0) >= 9) {
+          console.warn(`[SyncQueue] Discarding unrecoverable item ${item.id} (Status: ${status}, Retries: ${item.retryCount || 0})`, err);
+          queue.shift(); // permanently remove
+          _saveQueue(queue);
+          continue; // keep flushing next items
+        }
+
+        // Otherwise, it's a transient error (0 or 5xx). Stop flushing to preserve order.
         console.warn(`[SyncQueue] Flush halted at item ${item.id}. Backend may be offline.`, err);
         item.retryCount = (item.retryCount || 0) + 1;
         _saveQueue(queue);

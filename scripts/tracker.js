@@ -112,11 +112,11 @@ window.Tracker = (() => {
   function saveFood() {
     const name = document.getElementById('food-name')?.value.trim();
     const category = document.getElementById('food-category')?.value || 'breakfast';
-    const quantity = parseFloat(document.getElementById('food-quantity')?.value) || 100;
-    const calories = parseFloat(document.getElementById('food-calories')?.value) || 0;
-    const protein = parseFloat(document.getElementById('food-protein')?.value) || 0;
-    const carbs = parseFloat(document.getElementById('food-carbs')?.value) || 0;
-    const fat = parseFloat(document.getElementById('food-fats')?.value) || 0;
+    const quantity = Math.max(1, parseFloat(document.getElementById('food-quantity')?.value) || 100);
+    const calories = Math.max(0, parseFloat(document.getElementById('food-calories')?.value) || 0);
+    const protein = Math.max(0, parseFloat(document.getElementById('food-protein')?.value) || 0);
+    const carbs = Math.max(0, parseFloat(document.getElementById('food-carbs')?.value) || 0);
+    const fat = Math.max(0, parseFloat(document.getElementById('food-fats')?.value) || 0);
 
     if (!name) { Toast.show('Please enter a food name', 'warning'); return; }
     if (calories === 0 && protein === 0 && carbs === 0 && fat === 0) {
