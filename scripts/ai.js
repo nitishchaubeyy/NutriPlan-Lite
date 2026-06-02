@@ -27,10 +27,8 @@ export function checkApiStatus() {
 }
 
 export function showStatusBanner(type, message = "") {
-  // Target template layout context container or top layout node body fallback
   const aiContainer = document.getElementById('ai-coach-view') || document.getElementById('main-ai-feed') || document.body;
   
-  // Guard-clause validation block to stop redundant duplicate injections
   if (document.getElementById('api-status-banner')) return;
 
   const banner = document.createElement('div');
@@ -90,59 +88,8 @@ window.AI = (() => {
       }
     },
     {
-      test: /carb|carbs|energy|fatigue/i,
-      reply: (ctx) => {
-        const carbPct = ctx.targetCarbs > 0 ? ctx.carbs / ctx.targetCarbs : 0;
-        if (carbPct < 0.5) return `⚡ Your carbs are low at **${ctx.carbs}g** of ${ctx.targetCarbs}g. Add rice, oats, fruits, or whole grains for sustained energy.`;
-        return `✅ Carb intake looks good at **${ctx.carbs}g** (${Math.round(carbPct * 100)}% of goal). Carbs fuel your brain and muscles!`;
-      }
-    },
-    {
-      test: /fat|fats|healthy fat|omega/i,
-      reply: (ctx) => {
-        const fatPct = ctx.targetFat > 0 ? ctx.fat / ctx.targetFat : 0;
-        if (fatPct > 1.2) return `⚠️ Fat intake is high at **${ctx.fat}g** (${Math.round(fatPct * 100)}% of goal). Consider reducing fried foods, butter, or full-fat dairy.`;
-        return `Fats are at **${ctx.fat}g** of ${ctx.targetFat}g (${Math.round(fatPct * 100)}%). Healthy fats from nuts, seeds, avocado, and fish support brain and hormone health.`;
-      }
-    },
-    {
-      test: /lose weight|fat loss|deficit|cut/i,
-      reply: (ctx) => `For fat loss: aim for a **300–500 kcal daily deficit**. Your target is ${ctx.targetCal} kcal. Keep protein high (${ctx.targetProtein}g/day), stay hydrated, and prioritize whole foods. Consistency beats perfection! 🎯`
-    },
-    {
-      test: /gain weight|bulk|muscle gain|surplus/i,
-      reply: (ctx) => `For muscle gain: eat in a **200–400 kcal surplus**. Your current target is ${ctx.targetCal} kcal. Prioritize protein (${ctx.targetProtein}g/day), time carbs around workouts, and get 7–9 hours of sleep. 💪`
-    },
-    {
-      test: /breakfast|morning meal/i,
-      reply: () => `🌅 **Healthy breakfast ideas:**\n- Oats with whey protein + banana (450 kcal, 32g protein)\n- Eggs (3) + whole wheat toast + fruits (400 kcal, 28g protein)\n- Greek yogurt bowl + nuts + berries (350 kcal, 22g protein)\n- Paneer bhurji with 2 rotis (480 kcal, 26g protein)`
-    },
-    {
-      test: /lunch|afternoon meal|midday/i,
-      reply: () => `☀️ **Balanced lunch ideas:**\n- Dal + rice + sabzi + curd (550 kcal, 25g protein)\n- Chicken breast + brown rice + vegetables (520 kcal, 42g protein)\n- Rajma chawal + salad (500 kcal, 22g protein)\n- Quinoa bowl + tofu + greens (460 kcal, 28g protein)`
-    },
-    {
-      test: /dinner|evening meal|supper/i,
-      reply: () => `🌙 **Light dinner ideas:**\n- Grilled fish + steamed vegetables (380 kcal, 35g protein)\n- Paneer curry + 1 roti (400 kcal, 24g protein)\n- Vegetable soup + whole wheat bread (300 kcal, 12g protein)\n- Egg white omelette + salad (280 kcal, 26g protein)`
-    },
-    {
-      test: /snack|snacks/i,
-      reply: () => `🍎 **Smart snack options:**\n- Handful of almonds + green tea (180 kcal)\n- Greek yogurt + honey (150 kcal, 12g protein)\n- Banana + peanut butter (220 kcal)\n- Boiled egg + cucumber (90 kcal, 8g protein)\n- Roasted chickpeas (150 kcal, 8g protein)`
-    },
-    {
       test: /streak|consistency|habit/i,
-      reply: (ctx) => `🔥 Your current tracking streak is **${ctx.streak} day${ctx.streak !== 1 ? 's' : ''}**! ${ctx.streak >= 7 ? 'Incredible consistency — you\'re building a real habit!' : ctx.streak >= 3 ? 'Great start! Keep going to build your streak.' : 'Every day you log is a step forward. You\'ve got this!'}`
-    },
-    {
-      test: /score|health score|rating/i,
-      reply: (ctx) => {
-        const feedback = ctx.score >= 85 ? 'Outstanding! 🌟' : ctx.score >= 70 ? 'Great job! 💪' : ctx.score >= 50 ? 'Good progress! 🎯' : 'Room to improve — start by logging meals and drinking water!';
-        return `Your Nutrition Score is **${ctx.score}/100**. ${feedback}\n\nScore breakdown:\n- Calorie accuracy: ${Math.round(ctx.calPct * 100)}%\n- Protein target: ${Math.round(ctx.protPct * 100)}%\n- Hydration: ${Math.round(ctx.hydPct * 100)}%`;
-      }
-    },
-    {
-      test: /thank|thanks|great|awesome|amazing|helpful/i,
-      reply: () => `You're welcome! 😊 Keep up the great work with your nutrition journey. Every healthy choice counts! 🌱`
+      reply: (ctx) => `🔥 Your current tracking streak is **${ctx.streak} day${ctx.streak !== 1 ? 's' : ''}**! ${ctx.streak >= 7 ? 'Incredible consistency!' : 'Great start!'}`
     }
   ];
 
@@ -183,21 +130,26 @@ window.AI = (() => {
     return `I'm here to help with your nutrition. You've logged **${ctx.calories} kcal** today (${Math.round(ctx.calPct * 100)}% of goal). Ask me about meals, macros, hydration, recipes, or your progress.`;
   }
 
-  // Production runtime external dynamic cloud dispatcher
+  // Helper to ensure appendMessage functionality locally if global is missing
+  function addChatBubble(type, text, id = null) {
+    const feed = document.getElementById('main-ai-feed');
+    if (!feed) return;
+    const html = `<div class="chat-bubble ${type}" ${id ? `id="${id}"` : ''}><p>${text.replace(/\n/g, '<br>')}</p></div>`;
+    feed.insertAdjacentHTML('beforeend', html);
+    feed.scrollTop = feed.scrollHeight;
+  }
+
+  // Text Model API
   async function queryCloudGeminiAI(prompt) {
     try {
-      const targetEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${activeGeminiKey}`;
+      // Switched to gemini-1.5-flash for faster and better responses
+      const targetEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeGeminiKey}`;
       const response = await fetch(targetEndpoint, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json" 
-        },
-        body: JSON.stringify({ 
-          contents: [{ parts: [{ text: prompt }] }] 
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
       });
 
-      // Catch localized auth errors gracefully without exploding execution tree
       if (response.status === 401 || response.status === 403) {
         showStatusBanner('error', '⚠️ Remote AI processing engine rejected your credentials (401/403). Falling back to offline engine!');
         return null;
@@ -207,7 +159,36 @@ window.AI = (() => {
       return rawResult?.candidates?.[0]?.content?.parts?.[0]?.text || null;
     } catch (err) {
       console.error("Intercepted runtime network drop:", err);
-      showStatusBanner('error', '⚠️ Cloud API connection timed out. Local pipeline is taking over.');
+      return null;
+    }
+  }
+
+  // Vision Model API (Snap & Log)
+  async function queryCloudGeminiVision(base64Data, mimeType) {
+    try {
+      const targetEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeGeminiKey}`;
+      const b64 = base64Data.split(',')[1];
+      const response = await fetch(targetEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: "Analyze this meal. Return ONLY a valid JSON object with exact keys: 'name' (string), 'calories' (number), 'protein' (number), 'carbs' (number), 'fat' (number). Estimate the values per average portion. Do not include markdown formatting, backticks, or any other text." },
+              { inline_data: { mime_type: mimeType, data: b64 } }
+            ]
+          }]
+        })
+      });
+      const rawResult = await response.json();
+      const text = rawResult?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+      if (text) {
+        const cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+        return JSON.parse(cleanText);
+      }
+      return null;
+    } catch (err) {
+      console.error("Vision API Error:", err);
       return null;
     }
   }
@@ -218,18 +199,71 @@ window.AI = (() => {
     const form = document.getElementById('main-ai-form');
     const input = document.getElementById('main-ai-input');
     const clearBtn = document.getElementById('clear-ai-chat');
+    
+    // Feature UI hooks
     const micBtn = document.getElementById('voice-input-btn');
+    const imageUpload = document.getElementById('image-upload-input');
     
     if (!form || !feed) return; 
-
     if (form.dataset.initialized) return;
     form.dataset.initialized = 'true';
 
-    // VOICE-TO-TEXT IMPLEMENTATION (Web Speech API)
+    // 📸 AI VISION IMPLEMENTATION (Snap & Log)
+    if (imageUpload) {
+      imageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const base64String = event.target.result;
+          const mimeType = file.type;
+          
+          addChatBubble('user-bubble', '📸 Uploaded a meal photo');
+          const typingId = 'typing-' + Date.now();
+          addChatBubble('ai-bubble', 'Analyzing meal image... 📸', typingId);
+
+          if (!isCloudModeActive) {
+            document.getElementById(typingId)?.remove();
+            addChatBubble('ai-bubble', '⚠️ Image analysis requires Cloud Mode (API Key). Currently in Local Demo Mode.');
+            return;
+          }
+
+          const nutritionData = await queryCloudGeminiVision(base64String, mimeType);
+          document.getElementById(typingId)?.remove();
+
+          if (nutritionData && nutritionData.name) {
+             const dateKey = typeof window.Tracker !== 'undefined' ? window.Tracker.currentDate : new Date().toISOString().split('T')[0];
+             const entry = {
+                name: nutritionData.name,
+                calories: Math.round(nutritionData.calories || 0),
+                protein: Math.round((nutritionData.protein || 0)*10)/10,
+                carbs: Math.round((nutritionData.carbs || 0)*10)/10,
+                fat: Math.round((nutritionData.fat || 0)*10)/10,
+                meal: 'snacks',
+                quantity: 100
+             };
+             
+             if (typeof window.Storage !== 'undefined' && window.Storage.addFood) {
+                window.Storage.addFood(dateKey, entry);
+                if (typeof window.App !== 'undefined') window.App.refresh();
+                addChatBubble('ai-bubble', `✅ Successfully logged **${entry.name}**!\n\nCalories: ${entry.calories} kcal\nProtein: ${entry.protein}g | Carbs: ${entry.carbs}g | Fat: ${entry.fat}g`);
+             } else {
+                addChatBubble('ai-bubble', `I analyzed the image as **${entry.name}** (${entry.calories} kcal), but couldn't save it to your log right now.`);
+             }
+          } else {
+             addChatBubble('ai-bubble', 'I couldn\'t recognize the food in the image. Please try another photo or describe it.');
+          }
+          imageUpload.value = ''; 
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 🎤 VOICE-TO-TEXT IMPLEMENTATION
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
     if (!SpeechRecognition && micBtn) {
-      micBtn.style.display = 'none'; // Hide mic if browser doesn't support it
+      micBtn.style.display = 'none'; 
       micBtn.title = "Voice input not supported in this browser";
     } else if (micBtn) {
       const recognition = new SpeechRecognition();
@@ -238,15 +272,11 @@ window.AI = (() => {
       recognition.lang = 'en-US';
 
       micBtn.addEventListener('click', () => {
-        try {
-          recognition.start();
-        } catch (e) {
-          console.error("Speech recognition already started or failed", e);
-        }
+        try { recognition.start(); } catch (e) { console.error("Speech recognition failed", e); }
       });
 
       recognition.onstart = () => {
-        micBtn.textContent = '🔴'; // Change icon to indicate recording
+        micBtn.textContent = '🔴'; 
         micBtn.style.transform = 'scale(1.2)';
         if (input) input.placeholder = "Listening...";
       };
@@ -259,27 +289,21 @@ window.AI = (() => {
       recognition.onend = () => {
         micBtn.textContent = '🎤';
         micBtn.style.transform = 'scale(1)';
-        if (input) input.placeholder = "Ask about meals, macros, or hydration...";
-        
-        // Auto-submit form if text was transcribed
+        if (input) input.placeholder = "Ask about meals or snap a photo...";
         if (input && input.value.trim() !== '') {
           form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
         }
       };
 
       recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
         micBtn.textContent = '🎤';
         micBtn.style.transform = 'scale(1)';
-        if (input) input.placeholder = "Ask about meals, macros, or hydration...";
-        
-        if (event.error === 'not-allowed') {
-          alert("Microphone access denied. Please allow mic permissions in your browser.");
-        }
+        if (input) input.placeholder = "Ask about meals or snap a photo...";
+        if (event.error === 'not-allowed') alert("Microphone access denied.");
       };
     }
-    // ------------------------------------------------------------
 
+    // Standard Chat Form Listeners
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
         feed.innerHTML = `
@@ -299,32 +323,31 @@ window.AI = (() => {
       });
     });
 
+    const pushMessage = typeof window.appendMessage === 'function' ? window.appendMessage : addChatBubble;
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const prompt = input?.value.trim();
       if (!prompt) return;
       
-      appendMessage('user-bubble', prompt);
+      pushMessage('user-bubble', prompt);
       input.value = '';
       
       const typingId = 'typing-' + Date.now();
-      appendMessage('ai-bubble', '...', typingId);
+      pushMessage('ai-bubble', '...', typingId);
       
       let finalReply = null;
-
-      // Conditional selection pattern based on cloud eligibility
       if (isCloudModeActive) {
         finalReply = await queryCloudGeminiAI(prompt);
       }
 
-      // Local system takes over execution block if cloud returns empty/error 
       if (!finalReply) {
         finalReply = getReply(prompt);
       }
       
       const typingEl = document.getElementById(typingId);
       if (typingEl) typingEl.remove();
-      appendMessage('ai-bubble', finalReply);
+      pushMessage('ai-bubble', finalReply);
     });
   }
 
@@ -341,19 +364,9 @@ window.AI = (() => {
       insights.push({ type: 'warning', title: 'Over calorie limit', msg: `You're ${Math.round(ctx.calories - ctx.targetCal)} kcal over your daily goal.` });
     } else if (ctx.calPct >= 0.85) {
       insights.push({ type: 'success', title: 'Calorie goal on track', msg: `Great job! ${Math.round(ctx.calPct * 100)}% of your daily calorie target reached.` });
-    } else {
-      insights.push({ type: 'info', title: 'Keep fueling up', msg: `${Math.round(ctx.targetCal - ctx.calories)} kcal remaining to reach your daily goal.` });
     }
 
-    if (ctx.protPct < 0.5) {
-      insights.push({ type: 'warning', title: 'Low protein intake', msg: `Only ${ctx.protein}g of ${ctx.targetProtein}g goal. Add eggs, chicken, or dal to boost protein.` });
-    } else if (ctx.protPct >= 0.9) {
-      insights.push({ type: 'success', title: 'Protein target hit!', msg: `Excellent! You're at ${ctx.protein}g protein — supporting muscle and recovery.` });
-    }
-
-    if (ctx.hydPct < 0.5) {
-      insights.push({ type: 'warning', title: 'Stay hydrated', msg: `Only ${ctx.water}ml of ${ctx.waterTarget}ml. Drink a glass of water now! 💧` });
-    } else if (ctx.hydPct >= 1) {
+    if (ctx.hydPct >= 1) {
       insights.push({ type: 'success', title: 'Hydration goal met! 💧', msg: `You've hit your ${ctx.waterTarget}ml water target today. Keep it up!` });
     }
 
@@ -369,7 +382,6 @@ window.AI = (() => {
     `).join('');
   }
 
-  // Automatically execute environment validations inside closure lifecycle hooks
   function init() {
     checkApiStatus();
     initMainChat();
@@ -379,7 +391,6 @@ window.AI = (() => {
   return { init, initMainChat, generateInsights, getReply };
 })();
 
-// Self-contained DOM lifecycle execution block
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => window.AI.init());
 } else {
