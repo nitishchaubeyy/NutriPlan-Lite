@@ -1,13 +1,31 @@
-// ================================================================
-// tracker.js — Food tracking, meal timeline, macros
+// tracker.js — Food tracking, meal timeline, macros, Custom Foods
 // NutriPlan-Lite
-// ================================================================
-
 window.Tracker = (() => {
   let currentDate = null; // initialized lazily in init()
   let editingId = null;
   let foodDB = {};
   let initialized = false;
+
+  // ── 1. CUSTOM FOOD LOGIC (LOCAL STORAGE) ────────────────────────
+  const CUSTOM_FOODS_KEY = 'nutriplan_custom_foods';
+
+  function getCustomFoods() {
+    try {
+      const data = localStorage.getItem(CUSTOM_FOODS_KEY);
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      console.error("Error reading custom foods:", e);
+      return {};
+    }
+  }
+
+  function saveCustomFood(name, nutritionObj) {
+    if (!name || !nutritionObj) return;
+    const customFoods = getCustomFoods();
+    // Use lower case name as key to match foodDB pattern
+    customFoods[name.toLowerCase()] = nutritionObj;
+    localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify(customFoods));
+  }
 
   // ── Load food database ──────────────────────────────────────────
   async function loadFoodDB() {
@@ -71,22 +89,41 @@ window.Tracker = (() => {
     });
     const qty = document.getElementById('food-quantity');
     if (qty) qty.value = 100;
+    
+    // Reset custom checkbox if we add it via DOM later
+    const customCheck = document.getElementById('save-as-custom-checkbox');
+    if (customCheck) customCheck.checked = false;
+
     hideAutocomplete();
   }
 
-  // ── Autocomplete ────────────────────────────────────────────────
+  // ── Autocomplete (Merged DB + Custom) ───────────────────────────
   function showAutocomplete(query) {
     const list = document.getElementById('food-suggestions');
     if (!list) return;
     const q = (query || '').toLowerCase().trim();
     if (!q) { hideAutocomplete(); return; }
-    const matches = Object.keys(foodDB).filter(k => k.includes(q)).slice(0, 6);
+
+    // Merge static DB and Custom Foods
+    const customFoods = getCustomFoods();
+    const combinedDB = { ...foodDB, ...customFoods };
+    
+    // Track which ones are custom for UI badging
+    const customKeys = Object.keys(customFoods);
+
+    const matches = Object.keys(combinedDB).filter(k => k.includes(q)).slice(0, 8); // increased limit slightly
     if (matches.length === 0) { hideAutocomplete(); return; }
+    
     list.innerHTML = matches.map(m => {
-      const item = foodDB[m];
-      return `<div class="suggestion-item" data-food="${m}">
-        <strong>${m}</strong>
-        <span>${item.cal} kcal/100g &middot; P:${item.protein}g C:${item.carbs}g F:${item.fat}g</span>
+      const item = combinedDB[m];
+      const isCustom = customKeys.includes(m);
+      
+      return `<div class="suggestion-item flex items-center justify-between" data-food="${m}" data-iscustom="${isCustom}">
+        <div>
+            <strong>${m}</strong>
+            ${isCustom ? `<span style="font-size: 0.65rem; background: var(--color-primary-light, #e0e7ff); color: var(--color-primary, #4f46e5); padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold;">Custom</span>` : ''}
+        </div>
+        <span style="display: block;">${item.cal} kcal/100g &middot; P:${item.protein}g C:${item.carbs}g F:${item.fat}g</span>
       </div>`;
     }).join('');
     list.classList.remove('hidden');
@@ -98,7 +135,12 @@ window.Tracker = (() => {
   }
 
   function fillFromDB(foodName) {
-    const item = foodDB[foodName.toLowerCase()];
+    const q = foodName.toLowerCase();
+    const customFoods = getCustomFoods();
+    
+    // Look in custom first, then fallback to static DB
+    const item = customFoods[q] || foodDB[q];
+    
     if (!item) return;
     const qty = parseFloat(document.getElementById('food-quantity')?.value) || 100;
     const factor = qty / 100;
@@ -123,6 +165,20 @@ window.Tracker = (() => {
       Toast.show('Please enter nutrition values', 'warning'); return;
     }
 
+    // ── Save as Custom Food Logic ──
+    const saveAsCustomCheck = document.getElementById('save-as-custom-checkbox');
+    if (saveAsCustomCheck && saveAsCustomCheck.checked) {
+        // Normalize macros back to per 100g ratio to save in DB
+        const ratio = 100 / quantity;
+        const nutritionData = {
+            cal: Math.round(calories * ratio),
+            protein: round1(protein * ratio),
+            carbs: round1(carbs * ratio),
+            fat: round1(fat * ratio)
+        };
+        saveCustomFood(name, nutritionData);
+    }
+
     const entry = { name, meal: category, quantity, calories: Math.round(calories), protein: round1(protein), carbs: round1(carbs), fat: round1(fat) };
 
     if (editingId) {
@@ -135,6 +191,36 @@ window.Tracker = (() => {
 
     closeDrawer();
     App.refresh();
+  }
+
+  // ── UI Injection for Custom Checkbox ─────────────────────────────
+  function injectCustomFoodUI() {
+      // Find the submit button inside the drawer form
+      const form = document.getElementById('food-form');
+      if (!form || document.getElementById('save-as-custom-checkbox')) return;
+      
+      const submitBtnContainer = form.querySelector('.drawer-actions') || form;
+      
+      const customWrapper = document.createElement('div');
+      customWrapper.style.display = 'flex';
+      customWrapper.style.alignItems = 'center';
+      customWrapper.style.gap = '8px';
+      customWrapper.style.marginBottom = '12px';
+      customWrapper.style.marginTop = '12px';
+      
+      customWrapper.innerHTML = `
+        <input type="checkbox" id="save-as-custom-checkbox" style="width: 16px; height: 16px; cursor: pointer;">
+        <label for="save-as-custom-checkbox" style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+            Save to my Custom Foods DB (per 100g)
+        </label>
+      `;
+      
+      // Insert right before actions/submit buttons
+      if (form.querySelector('.drawer-actions')) {
+          form.insertBefore(customWrapper, form.querySelector('.drawer-actions'));
+      } else {
+          form.appendChild(customWrapper);
+      }
   }
 
   // ── Edit entry ──────────────────────────────────────────────────
@@ -293,13 +379,16 @@ window.Tracker = (() => {
 
   // ── Wire up drawer events ────────────────────────────────────────
   async function init() {
-    currentDate = Storage.todayKey(); // safe now — Storage is fully loaded
+    currentDate = Storage.todayKey(); 
     if (initialized) return;
     initialized = true;
     
     await loadFoodDB();
+    
+    // Attempt UI injection slightly after load to ensure DOM is ready
+    setTimeout(injectCustomFoodUI, 500);
 
-    // Open drawer buttons (data-open-food-drawer)
+    // Open drawer buttons
     document.addEventListener('click', e => {
       if (e.target.closest('[data-open-food-drawer]')) openDrawer();
       if (e.target.closest('[data-close-food-drawer]')) closeDrawer();
@@ -316,12 +405,12 @@ window.Tracker = (() => {
       nameEl.addEventListener('keydown', e => { if (e.key === 'Escape') hideAutocomplete(); });
     }
 
-    // Quantity change — auto-recalc from DB
+    // Quantity change — auto-recalc from merged DB
     const qtyEl = document.getElementById('food-quantity');
     if (qtyEl) {
       qtyEl.addEventListener('input', () => {
         const name = document.getElementById('food-name')?.value.trim().toLowerCase();
-        if (name && foodDB[name]) fillFromDB(name);
+        if (name) fillFromDB(name); // FillFromDB handles merged check
       });
     }
 
@@ -371,7 +460,6 @@ window.Tracker = (() => {
     currentDate = Storage.getLocalDateString(d);
     updateDateLabel();
 
-    // Sync from backend for this specific date before refreshing the UI
     if (window.Storage && window.Storage.sync) {
       await window.Storage.sync(currentDate);
     }
