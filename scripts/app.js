@@ -135,3 +135,52 @@ window.addEventListener('pageLoaded', async (e) => {
     }
   });
 });
+
+// ── PWA & Service Worker Registration ──────────────────────────────
+let deferredPrompt;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch((err) => {
+        console.error('ServiceWorker registration failed: ', err);
+      });
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show the custom install panel in the dashboard
+  const installPanel = document.getElementById('pwa-install-panel');
+  if (installPanel) {
+    installPanel.classList.remove('hidden');
+  }
+});
+
+// Handle custom install button click (use Event Delegation since it's in a template)
+document.addEventListener('click', async (e) => {
+  if (e.target && e.target.id === 'btn-install-pwa') {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
+    
+    deferredPrompt = null;
+    
+    const installPanel = document.getElementById('pwa-install-panel');
+    if (installPanel) installPanel.classList.add('hidden');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('NutriPlan Lite was installed securely.');
+  const installPanel = document.getElementById('pwa-install-panel');
+  if (installPanel) installPanel.classList.add('hidden');
+});
