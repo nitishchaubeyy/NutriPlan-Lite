@@ -1519,3 +1519,83 @@ function appendChatMessage(sender, initial, text) {
     return messageId;
 }
 
+// OFFLINE DATA EXPORT & IMPORT LOGIC (#132)
+
+// Using event delegation because elements are inside <template> and rendered dynamically
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'exportBtn') {
+        const backupData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            backupData[key] = localStorage.getItem(key);
+        }
+        
+        const jsonString = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement("a");
+        a.href = url;
+        const dateStr = new Date().toISOString().split('T')[0];
+        a.download = `nutriplan-backup-${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        if (typeof notify === 'function') {
+            notify("Backup downloaded successfully!", "success", 3000);
+        } else {
+            alert("✅ Backup downloaded successfully!");
+        }
+    }
+
+    if (e.target.id === 'restoreBtn') {
+        const importInput = document.getElementById('importFile');
+        if (importInput) importInput.click();
+    }
+});
+
+document.addEventListener('change', (e) => {
+    if (e.target.id === 'importFile') {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const parsedData = JSON.parse(evt.target.result);
+                
+                if (typeof parsedData !== "object" || parsedData === null) {
+                    throw new Error("Invalid JSON format");
+                }
+
+                Object.keys(parsedData).forEach(key => {
+                    localStorage.setItem(key, parsedData[key]);
+                });
+
+                if (typeof notify === 'function') {
+                    notify("Data restored successfully! Reloading...", "success", 2000);
+                } else {
+                    alert("♻️ Data restored successfully! The page will now reload.");
+                }
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+
+            } catch (error) {
+                console.error("Restore Error:", error);
+                if (typeof notify === 'function') {
+                    notify("Invalid backup file. Please upload a valid NutriPlan JSON.", "error", 4000);
+                } else {
+                    alert("❌ Invalid backup file. Please upload a valid NutriPlan JSON backup.");
+                }
+            }
+            
+            e.target.value = ''; 
+        };
+        reader.readAsText(file);
+    }
+});

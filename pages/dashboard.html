@@ -218,15 +218,30 @@
     </section>
 
     <!-- Recommendations -->
-    <section class="recommendations glass-panel">
-      <div class="section-heading compact">
-        <div>
-          <p class="eyebrow">Recommendations</p>
-          <h2>Next best actions</h2>
-        </div>
-      </div>
-      <div id="recommendation-list" class="recommendation-list"></div>
-    </section>
+    <section class="backup-panel glass-panel" style="margin-bottom: 1.5rem;">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Data Management</p>
+              <h2>Backup & Restore</h2>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Export your local data as a JSON file or restore from a previous backup.</p>
+          <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+            <button id="exportBtn" class="primary-button full-width" type="button">💾 Download Backup</button>
+            <button id="restoreBtn" class="secondary-button full-width" type="button">📂 Restore Backup</button>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+          </div>
+        </section>
+
+        <section class="recommendations glass-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Recommendations</p>
+              <h2>Next best actions</h2>
+            </div>
+          </div>
+          <div id="recommendation-list" class="recommendation-list"></div>
+        </section>
 
     <!-- Hydration Panel -->
     <section class="hydration-panel glass-panel">
